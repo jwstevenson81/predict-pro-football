@@ -1,0 +1,280 @@
+﻿@model PPF.Models.ViewModels.MyPredictViewModel
+@{
+    Layout = "";
+}
+@using (Html.BeginForm("AcceptPicks", "MyPredict", FormMethod.Post, new { id = "PickForm_Week_" + @Model.CurrentWeek }))
+{
+    <div id="pick-tabs">
+        <div id="weekly-picks-@Model.CurrentWeek.ToString()">
+            <h2 class="score">Your weekly score for week @Model.CurrentWeek.ToString(): <strong>@Model.WeekPointTotal.ToString()</strong></h2>
+            <h2 class="scorePaddBottom">Your Playoff and Superbowl score for week @Model.CurrentWeek.ToString(): <strong>@Model.PlayoffSuperbowlPointTotal.ToString()</strong></h2>
+            <h2>Make Your Picks</h2>
+            @Html.HiddenFor(m => m.CurrentWeek)
+            @Html.HiddenFor(m => m.TheSeason.Id)
+            @Html.HiddenFor(m => m.TheSeason.NumberOfWeeks)
+            @Html.HiddenFor(m => m.AreStandardPicks, new { @class = "are-standard-picks" })
+            @Html.HiddenFor(m => m.Disabled)
+            <table class="picker">
+                <thead>
+                    <tr>
+                        <th class="ui-state-default">
+                            Points
+                        </th>
+                        <th class="ui-state-default">
+                            The Game
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.MyPicks.Count; i++)
+                    {
+                        <tr>
+                            <td style="width: 50px; text-align: center;" @if(Model.MyPicks[i].IsWinner) { <text>class="winner"</text> }>
+                                @if (Model.MyPicks[i].Game.GameDateTime < DateTime.Now)
+                                {
+                                    @Html.DisplayFor(m => m.MyPicks[i].PointTotal)
+                                }
+                                else
+                                {
+                                    var points = Model.PointList.Select(x => new SelectListItem() { Text = x.ToString(), Value = x.ToString() }).ToList();
+                                    @Html.DropDownListFor(m => m.MyPicks[i].PointTotal, new SelectList(points, "Value", "Text", Model.MyPicks[i].PointTotal));
+                                }
+                                @Html.HiddenFor(m => m.MyPicks[i].Game.Id)
+                            </td>
+                            <td>
+                                <div>
+                                    @if (Model.MyPicks[i].Game.GameDateTime < DateTime.Now)
+                                    {
+                                        @Html.RadioButtonFor(m => m.MyPicks[i].Team.Id, Model.MyPicks[i].Game.AwayTeam.Id, new { disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(m => m.MyPicks[i].Team.Id, Model.MyPicks[i].Game.AwayTeam.Id)
+                                        
+                                    }
+                                    <span class="emphasis">@Model.MyPicks[i].Game.AwayTeam.TeamName</span>
+                                    @if (User.IsInRole("Admins") || User.IsInRole("GameManager"))
+                                    {
+                                        <text>&nbsp;</text>@Html.TextBoxFor(m => m.MyPicks[i].Game.AwayTeamScore, new { @class = "input_small" })
+                                    }
+                                    else 
+                                    {
+                                        <text>&nbsp;<span class="emphasis">@Html.DisplayFor(m => m.MyPicks[i].Game.AwayTeamScore)</span></text>
+                                    }
+                                    at
+                                    @if (Model.MyPicks[i].Game.GameDateTime < DateTime.Now)
+                                    {
+                                        @Html.RadioButtonFor(m => m.MyPicks[i].Team.Id, Model.MyPicks[i].Game.HomeTeam.Id, new { disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(m => m.MyPicks[i].Team.Id, Model.MyPicks[i].Game.HomeTeam.Id)
+                                    }
+                                    <span class="emphasis">@Model.MyPicks[i].Game.HomeTeam.TeamName</span>
+                                    @if (User.IsInRole("Admins") || User.IsInRole("GameManager"))
+                                    {
+                                        <text>&nbsp;</text>@Html.TextBoxFor(m => m.MyPicks[i].Game.HomeTeamScore, new { @class = "input_small" })
+                                    }
+                                    else
+                                    {
+                                        <text>&nbsp;<span class="emphasis">@Html.DisplayFor(m => m.MyPicks[i].Game.HomeTeamScore)</span></text>
+                                    }
+                                </div>
+                                <div style="margin-left: 26px;">
+                                    @if (User.IsInRole("Admins") || User.IsInRole("GameManager"))
+                                    {    
+                                        <text>@Html.TextBoxFor(m => m.MyPicks[i].Game.GameDateTime, new { style = "width: 180px", @class = "datetime_picker_open_game", gameid = String.Format("{0}", Model.MyPicks[i].Game.Id.ToString()) })
+                                        &nbsp;&nbsp;<input type="button" class="btn-delete-game" data-gameid="@Model.MyPicks[i].Game.Id" value="Delete Game" />
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        <text><span class="small">@Html.DisplayFor(m => m.MyPicks[i].Game.GameDateTime)</span></text>
+                                    }
+                                </div>
+                                @if (Model.MyPicks[i].Game.GameDateTime > DateTime.Now)
+                                {
+                                    <text>
+                                    <div id="countdown-@Model.MyPicks[i].Game.Id" style=" width: 300px; padding: 2px; margin-left: 26px; margin-top: 10px;" data-startTime="@Model.MyPicks[i].Game.GameDateTime.ToString("MMMM dd, yyyy HH:mm:ss")" class="countdown"></div>
+                                    </text>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Model.ShouldHavePlayoffSuperbowlPicks)
+        {
+            <div id="playoff-picks-@Model.CurrentWeek.ToString()" style="margin-top: 20px;">
+            <h2>
+                @if (Model.Disabled)
+                {
+                    <text>Your Playoff and Superbowl Picks for Week @Model.CurrentWeek.ToString()</text>
+                }
+                else
+                {
+                    <text>Make Your Playoff/Superbowl Picks for Week @Model.CurrentWeek.ToString()</text>
+                }
+                </h2>
+                <p>
+                    Your playoff picks are worth: <span class="emphasis">@Model.PossiblePlayoffPointTotal</span> points.<br />
+                    Your superbowl picks are worth: <span class="emphasis">@Model.PossibleSuperbowlPointTotal</span> points.</p>
+            <div style="float: left; width: 49%;">
+                
+                @if (!Model.Disabled)
+                {
+                <text>
+                <h3>
+                    NFC</h3>
+                <table class="picker">
+                    <thead>
+                        <tr>
+                            <th class="ui-state-default">
+                                Team
+                            </th>
+                            <th class="ui-state-default">
+                                Playoff?
+                            </th>
+                            <th class="ui-state-default">
+                                Superbowl?
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var team in Model.NfcTeams)
+                        {
+                            <tr>
+                                <td>@team.TeamName
+                                </td>
+                                <td class="ps-@Model.CurrentWeek.ToString()">
+                                    @Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_playoff_", team.Id), Model.MyPlayoffPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
+                                </td>
+                                <td class="ps-@Model.CurrentWeek.ToString()">@Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_superbowl_", team.Id), Model.MySuperbowlPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                </text>
+                }
+                else
+                {
+                    <text>
+                    <h3>NFC Playoff Picks</h3>
+                    <table class="picker">
+                        <thead>
+                            <tr>
+                                <th class="ui-state-default">Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pick in Model.MyPlayoffPicks.Where(p => p.Team.Conference.ToUpper() == "NFC").ToList())
+                            {
+                                <tr>
+                                    <td>@pick.Team.TeamName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <h3 style="margin-top: 10px;">NFC Superbowl Picks</h3>
+                    <table class="picker">
+                        <thead>
+                            <tr>
+                                <th class="ui-state-default">Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pick in Model.MySuperbowlPicks.Where(p => p.Team.Conference.ToUpper() == "NFC").ToList())
+                            {
+                                <tr>
+                                    <td>@pick.Team.TeamName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    </text>
+                }
+            </div>
+            <div style="float: right; width: 49%;">
+                
+                @if (!Model.Disabled)
+                {
+                <text>
+                <h3>
+                    AFC</h3>
+                <table class="picker">
+                    <thead>
+                        <tr>
+                            <th class="ui-state-default">
+                                Team
+                            </th>
+                            <th class="ui-state-default">
+                                Playoff?
+                            </th>
+                            <th class="ui-state-default">
+                                Superbowl?
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var team in Model.AfcTeams)
+                        {
+                            <tr>
+                                <td>@team.TeamName
+                                </td>
+                                <td class="ps-@Model.CurrentWeek.ToString()">@Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_playoff_", team.Id), Model.MyPlayoffPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
+                                </td>
+                                <td class="ps-@Model.CurrentWeek.ToString()">@Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_superbowl_", team.Id), Model.MySuperbowlPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                </text>
+                }
+                else
+                {
+                    <text>
+                    <h3>AFC Playoff Picks</h3>
+                    <table class="picker">
+                        <thead>
+                            <tr>
+                                <th class="ui-state-default">Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pick in Model.MyPlayoffPicks.Where(p => p.Team.Conference.ToUpper() == "AFC").ToList())
+                            {
+                                <tr>
+                                    <td>@pick.Team.TeamName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <h3 style="margin-top: 10px;">AFC Superbowl Pick</h3>
+                    <table class="picker">
+                        <thead>
+                            <tr>
+                                <th class="ui-state-default">Team</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pick in Model.MySuperbowlPicks.Where(p => p.Team.Conference.ToUpper() == "AFC").ToList())
+                            {
+                                <tr>
+                                    <td>@pick.Team.TeamName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    </text>
+                }
+            </div>
+            <div style="clear: both;">
+                &nbsp;</div>
+        </div>
+        }
+    </div>
+    
+}

@@ -1,0 +1,38 @@
+﻿@model PPF.Models.ViewModels.SuperbowlPlayoffPickerViewModel
+<div style="width: 49%; float: right;">
+    <h2>
+        NFC Teams</h2>
+    
+</div>
+<div style="width: 50%;">
+    <h2>
+        AFC Teams</h2>
+    <table cellpadding="0" cellspacing="0" class="picker">
+        <thead>
+            <tr>
+                <th class="ui-widget ui-widget-header">
+                    Team
+                </th>
+                <th class="ui-widget ui-widget-header">
+                    Playoff Pick?
+                </th>
+                <th class="ui-widget ui-widget-header">
+                    Superbowl Pick
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in Model.Teams.Where(t => t.Conference.ToUpper() == "AFC"))
+            {
+                <tr>
+                    <td>@team.TeamName
+                    </td>
+                    <td>@Html.CheckBox(string.Concat(team.Conference, "_team_playoff_", team.Id), Model.Picks.Where(p => p.IsPlayoff && p.Team.Id.Equals(team.Id)).Count().Equals(1))
+                    </td>
+                    <td>@Html.CheckBox(string.Concat(team.Conference, "_team_superbowl_", team.Id), Model.Picks.Where(p => p.IsSuperbowl && p.Team.Id.Equals(team.Id)).Count().Equals(1))
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

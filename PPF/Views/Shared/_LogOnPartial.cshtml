@@ -1,0 +1,38 @@
+﻿@if(Request.IsAuthenticated) {
+    <text><span style="color: #fff">Welcome <b>@Context.User.Identity.Name</b>!</span>&nbsp;
+    <input type="button" value="Log Off" id="btnLogOff" />
+    </text>
+}
+else {
+    <text><input type="button" value="Log On" id="btnLogOn" />&nbsp;
+          <input type="button" value="Register" id="btnRegister" />
+    </text>
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $("#btnLogOff").click(function () {
+
+            window.location = '@Url.Action("LogOff", "Home")';
+
+        });
+
+        $("#btnLogOn").click(function () {
+
+            window.location = '@Url.Action("Index", "Home")';
+
+        });
+
+        $("#btnRegister").click(function () {
+
+            window.location = '@Url.Action("Register", "Home")';
+
+        });
+
+
+
+    });
+
+</script>

@@ -1,0 +1,581 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ppfModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="ppfModelStoreContainer">
+          <EntitySet Name="Game" EntityType="ppfModel.Store.Game" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Pick" EntityType="ppfModel.Store.Pick" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="PlayoffSuperbowlPick" EntityType="ppfModel.Store.PlayoffSuperbowlPick" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Season" EntityType="ppfModel.Store.Season" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="StandardPick" EntityType="ppfModel.Store.StandardPick" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="StandardPlayoffSuperbowlPick" EntityType="ppfModel.Store.StandardPlayoffSuperbowlPick" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Team" EntityType="ppfModel.Store.Team" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Game_Season" Association="ppfModel.Store.FK_Game_Season">
+            <End Role="Season" EntitySet="Season" />
+            <End Role="Game" EntitySet="Game" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pick_Game" Association="ppfModel.Store.FK_Pick_Game">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="Pick" EntitySet="Pick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayoffSuperbowlPick_Season" Association="ppfModel.Store.FK_PlayoffSuperbowlPick_Season">
+            <End Role="Season" EntitySet="Season" />
+            <End Role="PlayoffSuperbowlPick" EntitySet="PlayoffSuperbowlPick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayoffSuperbowlPick_Team" Association="ppfModel.Store.FK_PlayoffSuperbowlPick_Team">
+            <End Role="Team" EntitySet="Team" />
+            <End Role="PlayoffSuperbowlPick" EntitySet="PlayoffSuperbowlPick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StandardPick_Game" Association="ppfModel.Store.FK_StandardPick_Game">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="StandardPick" EntitySet="StandardPick" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StandardPlayoffSuperbowlPick_Season" Association="ppfModel.Store.FK_StandardPlayoffSuperbowlPick_Season">
+            <End Role="Season" EntitySet="Season" />
+            <End Role="StandardPlayoffSuperbowlPick" EntitySet="StandardPlayoffSuperbowlPick" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Season_Id" Type="int" Nullable="false" />
+          <Property Name="GameDateTime" Type="datetime" Nullable="false" />
+          <Property Name="IsPlayoff" Type="bit" Nullable="false" />
+          <Property Name="IsSuperbowl" Type="bit" Nullable="false" />
+          <Property Name="Week" Type="int" Nullable="false" />
+          <Property Name="HomeTeam_Id" Type="int" Nullable="false" />
+          <Property Name="AwayTeam_Id" Type="int" Nullable="false" />
+          <Property Name="HomeTeamScore" Type="int" />
+          <Property Name="AwayTeamScore" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="varchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="Pick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Game_Id" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" Nullable="false" MaxLength="256" />
+          <Property Name="PointTotal" Type="int" Nullable="false" />
+          <Property Name="IsWinner" Type="bit" />
+          <Property Name="Team_Id" Type="int" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="nvarchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="PlayoffSuperbowlPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="nvarchar" Nullable="false" MaxLength="256" />
+          <Property Name="PointTotal" Type="int" Nullable="false" />
+          <Property Name="Week" Type="int" Nullable="false" />
+          <Property Name="Season_Id" Type="int" Nullable="false" />
+          <Property Name="IsSuperbowl" Type="bit" Nullable="false" />
+          <Property Name="IsPlayoff" Type="bit" Nullable="false" />
+          <Property Name="IsWinner" Type="bit" Nullable="false" />
+          <Property Name="Team_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Season">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="IsCurrent" Type="bit" Nullable="false" />
+          <Property Name="NumberOfWeeks" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StandardPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PointTotal" Type="int" Nullable="false" />
+          <Property Name="Team_Id" Type="int" Nullable="false" />
+          <Property Name="IsWinner" Type="bit" />
+          <Property Name="Game_Id" Type="int" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="nvarchar" MaxLength="256" />
+          <Property Name="Active" Type="bit" />
+        </EntityType>
+        <EntityType Name="StandardPlayoffSuperbowlPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Season_Id" Type="int" Nullable="false" />
+          <Property Name="Week" Type="int" Nullable="false" />
+          <Property Name="IsPlayoff" Type="bit" Nullable="false" />
+          <Property Name="IsSuperbowl" Type="bit" Nullable="false" />
+          <Property Name="PointTotal" Type="int" Nullable="false" />
+          <Property Name="Team_Id" Type="int" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="UpdateBy" Type="nvarchar" MaxLength="256" />
+          <Property Name="Active" Type="bit" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="TeamName" Type="nvarchar" Nullable="false" MaxLength="256" />
+          <Property Name="Conference" Type="nvarchar" Nullable="false" MaxLength="256" />
+          <Property Name="Division" Type="nvarchar" Nullable="false" MaxLength="256" />
+        </EntityType>
+        <Association Name="FK_Game_Season">
+          <End Role="Season" Type="ppfModel.Store.Season" Multiplicity="1" />
+          <End Role="Game" Type="ppfModel.Store.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="Season_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pick_Game">
+          <End Role="Game" Type="ppfModel.Store.Game" Multiplicity="1" />
+          <End Role="Pick" Type="ppfModel.Store.Pick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Pick">
+              <PropertyRef Name="Game_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayoffSuperbowlPick_Season">
+          <End Role="Season" Type="ppfModel.Store.Season" Multiplicity="1" />
+          <End Role="PlayoffSuperbowlPick" Type="ppfModel.Store.PlayoffSuperbowlPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayoffSuperbowlPick">
+              <PropertyRef Name="Season_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayoffSuperbowlPick_Team">
+          <End Role="Team" Type="ppfModel.Store.Team" Multiplicity="1" />
+          <End Role="PlayoffSuperbowlPick" Type="ppfModel.Store.PlayoffSuperbowlPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayoffSuperbowlPick">
+              <PropertyRef Name="Team_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StandardPick_Game">
+          <End Role="Game" Type="ppfModel.Store.Game" Multiplicity="1" />
+          <End Role="StandardPick" Type="ppfModel.Store.StandardPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StandardPick">
+              <PropertyRef Name="Game_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StandardPlayoffSuperbowlPick_Season">
+          <End Role="Season" Type="ppfModel.Store.Season" Multiplicity="1" />
+          <End Role="StandardPlayoffSuperbowlPick" Type="ppfModel.Store.StandardPlayoffSuperbowlPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StandardPlayoffSuperbowlPick">
+              <PropertyRef Name="Season_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ppfModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="ppfEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Games" EntityType="ppfModel.Game" />
+          <EntitySet Name="Picks" EntityType="ppfModel.Pick" />
+          <EntitySet Name="PlayoffSuperbowlPicks" EntityType="ppfModel.PlayoffSuperbowlPick" />
+          <EntitySet Name="Seasons" EntityType="ppfModel.Season" />
+          <EntitySet Name="StandardPicks" EntityType="ppfModel.StandardPick" />
+          <EntitySet Name="StandardPlayoffSuperbowlPicks" EntityType="ppfModel.StandardPlayoffSuperbowlPick" />
+          <EntitySet Name="Teams" EntityType="ppfModel.Team" />
+          <AssociationSet Name="FK_Game_Season" Association="ppfModel.FK_Game_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="Game" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pick_Game" Association="ppfModel.FK_Pick_Game">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="Pick" EntitySet="Picks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StandardPick_Game" Association="ppfModel.FK_StandardPick_Game">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="StandardPick" EntitySet="StandardPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayoffSuperbowlPick_Season" Association="ppfModel.FK_PlayoffSuperbowlPick_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="PlayoffSuperbowlPick" EntitySet="PlayoffSuperbowlPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlayoffSuperbowlPick_Team" Association="ppfModel.FK_PlayoffSuperbowlPick_Team">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="PlayoffSuperbowlPick" EntitySet="PlayoffSuperbowlPicks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StandardPlayoffSuperbowlPick_Season" Association="ppfModel.FK_StandardPlayoffSuperbowlPick_Season">
+            <End Role="Season" EntitySet="Seasons" />
+            <End Role="StandardPlayoffSuperbowlPick" EntitySet="StandardPlayoffSuperbowlPicks" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="Season_Id" Nullable="false" />
+          <Property Type="DateTime" Name="GameDateTime" Nullable="false" />
+          <Property Type="Boolean" Name="IsPlayoff" Nullable="false" />
+          <Property Type="Boolean" Name="IsSuperbowl" Nullable="false" />
+          <Property Type="Int32" Name="Week" Nullable="false" />
+          <Property Type="Int32" Name="HomeTeam_Id" Nullable="false" />
+          <Property Type="Int32" Name="AwayTeam_Id" Nullable="false" />
+          <Property Type="Int32" Name="HomeTeamScore" />
+          <Property Type="Int32" Name="AwayTeamScore" />
+          <Property Type="DateTime" Name="UpdateDate" />
+          <Property Type="String" Name="UpdateBy" MaxLength="256" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Season" Relationship="ppfModel.FK_Game_Season" FromRole="Game" ToRole="Season" />
+          <NavigationProperty Name="Picks" Relationship="ppfModel.FK_Pick_Game" FromRole="Game" ToRole="Pick" />
+          <NavigationProperty Name="StandardPicks" Relationship="ppfModel.FK_StandardPick_Game" FromRole="Game" ToRole="StandardPick" />
+        </EntityType>
+        <EntityType Name="Pick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="Game_Id" Nullable="false" />
+          <Property Type="String" Name="UserId" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="PointTotal" Nullable="false" />
+          <Property Type="Boolean" Name="IsWinner" />
+          <Property Type="Int32" Name="Team_Id" />
+          <Property Type="DateTime" Name="UpdateDate" />
+          <Property Type="String" Name="UpdateBy" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Game" Relationship="ppfModel.FK_Pick_Game" FromRole="Pick" ToRole="Game" />
+        </EntityType>
+        <EntityType Name="PlayoffSuperbowlPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="UserId" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="PointTotal" Nullable="false" />
+          <Property Type="Int32" Name="Week" Nullable="false" />
+          <Property Type="Int32" Name="Season_Id" Nullable="false" />
+          <Property Type="Boolean" Name="IsSuperbowl" Nullable="false" />
+          <Property Type="Boolean" Name="IsPlayoff" Nullable="false" />
+          <Property Type="Boolean" Name="IsWinner" Nullable="false" />
+          <Property Type="Int32" Name="Team_Id" Nullable="false" />
+          <NavigationProperty Name="Season" Relationship="ppfModel.FK_PlayoffSuperbowlPick_Season" FromRole="PlayoffSuperbowlPick" ToRole="Season" />
+          <NavigationProperty Name="Team" Relationship="ppfModel.FK_PlayoffSuperbowlPick_Team" FromRole="PlayoffSuperbowlPick" ToRole="Team" />
+        </EntityType>
+        <EntityType Name="Season">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="StartDate" Nullable="false" />
+          <Property Type="DateTime" Name="EndDate" Nullable="false" />
+          <Property Type="Boolean" Name="IsCurrent" Nullable="false" />
+          <Property Type="Int32" Name="NumberOfWeeks" Nullable="false" />
+          <NavigationProperty Name="Games" Relationship="ppfModel.FK_Game_Season" FromRole="Season" ToRole="Game" />
+          <NavigationProperty Name="PlayoffSuperbowlPicks" Relationship="ppfModel.FK_PlayoffSuperbowlPick_Season" FromRole="Season" ToRole="PlayoffSuperbowlPick" />
+          <NavigationProperty Name="StandardPlayoffSuperbowlPicks" Relationship="ppfModel.FK_StandardPlayoffSuperbowlPick_Season" FromRole="Season" ToRole="StandardPlayoffSuperbowlPick" />
+        </EntityType>
+        <EntityType Name="StandardPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="PointTotal" Nullable="false" />
+          <Property Type="Int32" Name="Team_Id" Nullable="false" />
+          <Property Type="Boolean" Name="IsWinner" />
+          <Property Type="Int32" Name="Game_Id" Nullable="false" />
+          <Property Type="DateTime" Name="UpdateDate" />
+          <Property Type="String" Name="UpdateBy" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="Active" />
+          <NavigationProperty Name="Game" Relationship="ppfModel.FK_StandardPick_Game" FromRole="StandardPick" ToRole="Game" />
+        </EntityType>
+        <EntityType Name="StandardPlayoffSuperbowlPick">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="Season_Id" Nullable="false" />
+          <Property Type="Int32" Name="Week" Nullable="false" />
+          <Property Type="Boolean" Name="IsPlayoff" Nullable="false" />
+          <Property Type="Boolean" Name="IsSuperbowl" Nullable="false" />
+          <Property Type="Int32" Name="PointTotal" Nullable="false" />
+          <Property Type="Int32" Name="Team_Id" Nullable="false" />
+          <Property Type="DateTime" Name="UpdateDate" />
+          <Property Type="String" Name="UpdateBy" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="Active" />
+          <NavigationProperty Name="Season" Relationship="ppfModel.FK_StandardPlayoffSuperbowlPick_Season" FromRole="StandardPlayoffSuperbowlPick" ToRole="Season" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="TeamName" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Conference" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Division" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PlayoffSuperbowlPicks" Relationship="ppfModel.FK_PlayoffSuperbowlPick_Team" FromRole="Team" ToRole="PlayoffSuperbowlPick" />
+        </EntityType>
+        <Association Name="FK_Game_Season">
+          <End Type="ppfModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="ppfModel.Game" Role="Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="Season_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pick_Game">
+          <End Type="ppfModel.Game" Role="Game" Multiplicity="1" />
+          <End Type="ppfModel.Pick" Role="Pick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Pick">
+              <PropertyRef Name="Game_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StandardPick_Game">
+          <End Type="ppfModel.Game" Role="Game" Multiplicity="1" />
+          <End Type="ppfModel.StandardPick" Role="StandardPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StandardPick">
+              <PropertyRef Name="Game_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayoffSuperbowlPick_Season">
+          <End Type="ppfModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="ppfModel.PlayoffSuperbowlPick" Role="PlayoffSuperbowlPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayoffSuperbowlPick">
+              <PropertyRef Name="Season_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlayoffSuperbowlPick_Team">
+          <End Type="ppfModel.Team" Role="Team" Multiplicity="1" />
+          <End Type="ppfModel.PlayoffSuperbowlPick" Role="PlayoffSuperbowlPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlayoffSuperbowlPick">
+              <PropertyRef Name="Team_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StandardPlayoffSuperbowlPick_Season">
+          <End Type="ppfModel.Season" Role="Season" Multiplicity="1" />
+          <End Type="ppfModel.StandardPlayoffSuperbowlPick" Role="StandardPlayoffSuperbowlPick" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Season">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StandardPlayoffSuperbowlPick">
+              <PropertyRef Name="Season_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ppfModelStoreContainer" CdmEntityContainer="ppfEntities">
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="ppfModel.Game">
+              <MappingFragment StoreEntitySet="Game">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="AwayTeamScore" ColumnName="AwayTeamScore" />
+                <ScalarProperty Name="HomeTeamScore" ColumnName="HomeTeamScore" />
+                <ScalarProperty Name="AwayTeam_Id" ColumnName="AwayTeam_Id" />
+                <ScalarProperty Name="HomeTeam_Id" ColumnName="HomeTeam_Id" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="IsSuperbowl" ColumnName="IsSuperbowl" />
+                <ScalarProperty Name="IsPlayoff" ColumnName="IsPlayoff" />
+                <ScalarProperty Name="GameDateTime" ColumnName="GameDateTime" />
+                <ScalarProperty Name="Season_Id" ColumnName="Season_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Picks">
+            <EntityTypeMapping TypeName="ppfModel.Pick">
+              <MappingFragment StoreEntitySet="Pick">
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="Team_Id" ColumnName="Team_Id" />
+                <ScalarProperty Name="IsWinner" ColumnName="IsWinner" />
+                <ScalarProperty Name="PointTotal" ColumnName="PointTotal" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Game_Id" ColumnName="Game_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayoffSuperbowlPicks">
+            <EntityTypeMapping TypeName="ppfModel.PlayoffSuperbowlPick">
+              <MappingFragment StoreEntitySet="PlayoffSuperbowlPick">
+                <ScalarProperty Name="Team_Id" ColumnName="Team_Id" />
+                <ScalarProperty Name="IsWinner" ColumnName="IsWinner" />
+                <ScalarProperty Name="IsPlayoff" ColumnName="IsPlayoff" />
+                <ScalarProperty Name="IsSuperbowl" ColumnName="IsSuperbowl" />
+                <ScalarProperty Name="Season_Id" ColumnName="Season_Id" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="PointTotal" ColumnName="PointTotal" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Seasons">
+            <EntityTypeMapping TypeName="ppfModel.Season">
+              <MappingFragment StoreEntitySet="Season">
+                <ScalarProperty Name="NumberOfWeeks" ColumnName="NumberOfWeeks" />
+                <ScalarProperty Name="IsCurrent" ColumnName="IsCurrent" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StandardPicks">
+            <EntityTypeMapping TypeName="ppfModel.StandardPick">
+              <MappingFragment StoreEntitySet="StandardPick">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="Game_Id" ColumnName="Game_Id" />
+                <ScalarProperty Name="IsWinner" ColumnName="IsWinner" />
+                <ScalarProperty Name="Team_Id" ColumnName="Team_Id" />
+                <ScalarProperty Name="PointTotal" ColumnName="PointTotal" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StandardPlayoffSuperbowlPicks">
+            <EntityTypeMapping TypeName="ppfModel.StandardPlayoffSuperbowlPick">
+              <MappingFragment StoreEntitySet="StandardPlayoffSuperbowlPick">
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="Team_Id" ColumnName="Team_Id" />
+                <ScalarProperty Name="PointTotal" ColumnName="PointTotal" />
+                <ScalarProperty Name="IsSuperbowl" ColumnName="IsSuperbowl" />
+                <ScalarProperty Name="IsPlayoff" ColumnName="IsPlayoff" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="Season_Id" ColumnName="Season_Id" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teams">
+            <EntityTypeMapping TypeName="ppfModel.Team">
+              <MappingFragment StoreEntitySet="Team">
+                <ScalarProperty Name="Division" ColumnName="Division" />
+                <ScalarProperty Name="Conference" ColumnName="Conference" />
+                <ScalarProperty Name="TeamName" ColumnName="TeamName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model1">
+        <EntityTypeShape EntityType="ppfModel.Game" Width="1.5" PointX="3" PointY="4.25" Height="3.4001269531249996" />
+        <EntityTypeShape EntityType="ppfModel.Pick" Width="1.5" PointX="5.25" PointY="3.25" Height="2.4140429687499996" />
+        <EntityTypeShape EntityType="ppfModel.PlayoffSuperbowlPick" Width="1.5" PointX="3" PointY="9.375" Height="2.7427376302083353" />
+        <EntityTypeShape EntityType="ppfModel.Season" Width="1.5" PointX="0.75" PointY="6.625" Height="2.2496956380208308" />
+        <EntityTypeShape EntityType="ppfModel.StandardPick" Width="1.5" PointX="5.25" PointY="6.375" Height="2.4140429687500031" />
+        <EntityTypeShape EntityType="ppfModel.StandardPlayoffSuperbowlPick" Width="1.5" PointX="3" PointY="13" Height="2.7427376302083388" />
+        <EntityTypeShape EntityType="ppfModel.Team" Width="1.5" PointX="0.75" PointY="9.875" Height="1.7566536458333388" />
+        <AssociationConnector Association="ppfModel.FK_Game_Season" >
+          <ConnectorPoint PointX="2.25" PointY="7.1375634765625" />
+          <ConnectorPoint PointX="3" PointY="7.1375634765625" />
+        </AssociationConnector>
+        <AssociationConnector Association="ppfModel.FK_Pick_Game" >
+          <ConnectorPoint PointX="4.5" PointY="4.957021484375" />
+          <ConnectorPoint PointX="5.25" PointY="4.957021484375" />
+        </AssociationConnector>
+        <AssociationConnector Association="ppfModel.FK_StandardPick_Game" >
+          <ConnectorPoint PointX="4.5" PointY="7.0125634765625" />
+          <ConnectorPoint PointX="5.25" PointY="7.0125634765625" />
+        </AssociationConnector>
+        <AssociationConnector Association="ppfModel.FK_PlayoffSuperbowlPick_Season" >
+          <ConnectorPoint PointX="2.25" PointY="8.81815617648237" />
+          <ConnectorPoint PointX="2.78125" PointY="9.34940617648237" />
+          <ConnectorPoint PointX="2.78125" PointY="9.1550971538461532" />
+          <ConnectorPoint PointX="3.0011528461538459" PointY="9.375" />
+        </AssociationConnector>
+        <AssociationConnector Association="ppfModel.FK_PlayoffSuperbowlPick_Team" >
+          <ConnectorPoint PointX="2.25" PointY="10.753326822916669" />
+          <ConnectorPoint PointX="2.5416666666666665" PointY="10.753326822916669" />
+          <ConnectorPoint PointX="2.7083333333333335" PointY="10.753326822916669" />
+          <ConnectorPoint PointX="3" PointY="10.753326822916669" />
+        </AssociationConnector>
+        <AssociationConnector Association="ppfModel.FK_StandardPlayoffSuperbowlPick_Season" >
+          <ConnectorPoint PointX="2.2257692307692296" PointY="8.8746956380208317" />
+          <ConnectorPoint PointX="2.625" PointY="9.2739264072516" />
+          <ConnectorPoint PointX="2.625" PointY="14.371368815104169" />
+          <ConnectorPoint PointX="3" PointY="14.371368815104169" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

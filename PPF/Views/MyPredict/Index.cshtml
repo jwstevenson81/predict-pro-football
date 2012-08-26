@@ -1,0 +1,706 @@
+﻿@model PPF.Models.ViewModels.SeasonViewModel
+@{
+    ViewBag.Title = "My Predict";
+}
+<h1>Welcome to the @Model.StartDate.Year Season!</h1>
+<div style="margin-bottom: 20px;"><span style="font-size: 1.25em; font-weight: bold;">Your score for the @Model.StartDate.Year.ToString() Season:&nbsp;</span> <span style="font-size: 2.2em;">@Model.SeasonPointTotal.ToString()</span>
+</div>
+<div>
+    <input type="button" id="btnLeaderBoard" value="View Leaderboard" />&nbsp;
+    <input type="button" id="btnSaveChanges" value="Save My Changes" />&nbsp;
+    @if (User.IsInRole("Admins"))
+    {
+    <text><input type="button" id="btnAddGame" value="Add A Game" />&nbsp;
+    <input type="button" id="btnUpdateSeason" value="Update or Add a Season" />&nbsp;
+    <input type="button" id="btnMakeStandardPicks" value="Set as Standard Picks" />&nbsp;
+    <input type="button" id="btnCalcPSPicks" value="Calculate Post Season Scores" />
+    </text>
+    }
+
+</div>
+<div id="tabs">
+<ul>
+@for (var i = 1; i <= Model.NumberOfWeeks; i++)
+{
+    <li>@Html.ActionLink(i.ToString(), "Tab", new { week = i })</li>
+}
+</ul>
+</div>
+<div id="dlgSaving" style="display: none;" title="Saving Your Changes">
+<img src="@Url.Content("~/content/img/ajax-loading.gif")" alt="loading" style="float: left; margin-right: 1em;" />
+<span class="emphasis">Please wait...we are saving your changes.</span>
+</div>
+<div id="dlgError" style="display: none;" title="Uh Oh!  Error...">
+    <span class="emphasis"></span>
+</div>
+
+<div id="dlgAsk" style="display: none;" title="Are you sure...?">
+<span class="emphasis"></span>
+</div>
+
+
+<div id="dlgLeaderBoard" style="display: none;" title="@Model.StartDate.Year.ToString() Season Leaderboard">
+<table>
+<thead>
+    <tr>
+        <th class="ui-state-default" style="width: 75%">User</th>
+        <th class="ui-state-default" style="width: 25%">Points</th>
+    </tr>
+</thead>
+<tbody>
+@foreach (var leader in Model.Leaderboard.Leaders)
+{
+    <tr>
+        <td style="width: 75%">@leader.UserId</td>
+        <td style="width: 25%">@leader.Points</td>
+    </tr>
+}
+</tbody>
+</table>
+</div>
+<div id="dlgAddGame" style="display: none;" title="Add A Game">
+<form id="frmAddGame" method="post" action="" class="vertical">
+<label for="addGame_txtAwayTeam">Away Team</label>
+@Html.TextBox("addGame_txtAwayTeam", null)@Html.Hidden("addGame_hidAwayTeamId")
+<label for="addGame_txtHomeTeam">Home Team</label>
+@Html.TextBox("addGame_txtHomeTeam", null)@Html.Hidden("addGame_hidHomeTeamId")
+<label for="addGame_txtGameDate">Game Date</label>
+@Html.TextBox("addGame_txtGameDate", null, new { @class = "datetime_picker" })
+<label for="addGame_chkIsPlayoff">What Kind of Game?</label>
+<select id="addGame_kindOfGame">
+    <option value="R">Regular Season</option>
+    <option value="P">Playoff</option>
+    <option value="S">Superbowl</option>
+</select>
+</form>
+<div style="display: none; padding: 5px; margin-top: 5px;" id="divAddGameSuccess">
+    <strong>Congrats!  You added a game.  Keep it going...</strong>
+</div>
+<div style="display: none; padding: 5px; margin-top: 5px;" id="divAddGameError">
+    <span class="ui-state-error"></span>
+</div> 
+</div>
+<div id="dlgSaveSeason" style="display: none;" title="Add or Update a Season">
+<form id="frmSaveSeason" action="" method="post" class="vertical">
+<label for="saveSeason_txtChooseSeason">Do you want to edit an existing season?<br /><span class="small">hint: enter the year</span></label>
+@Html.TextBox("saveSeason_txtChooseSeason")
+<div class="formDivider">&nbsp;</div>
+<label for="saveSeason_txtSeasonStartDate">When does it start?</label>
+@Html.TextBox("saveSeason_txtSeasonStartDate", null, new { @class = "datetime_picker" })
+<label for="saveSeason_txtSeasonWeeks">How Many Weeks?</label>
+@Html.TextBox("saveSeason_txtSeasonWeeks")
+<label for="saveSeason_chkCurrent">Is it the current season?</label>
+@Html.CheckBox("saveSeason_chkCurrent")
+@Html.Hidden("saveSeason_hidSeasonId")
+<div style="display: none; padding: 5px; margin-top: 5px;" id="divSaveSeasonLoading">
+    <img src="@Url.Content("~/content/img/ajax-loading.gif")" alt="loading" style="float: left; margin-right: 10px;" />
+    <span class="emphasis">Loading...</span>
+</div>
+</form>
+<div style="display: none; padding: 5px; margin-top: 5px;" id="divSaveSeasonSuccess">
+    <strong>Congrats!  You saved a season.  Keep it going...</strong>
+</div>
+</div>
+
+<script type="text/javascript">
+    var currentTab = 0;
+    var afcPlayoffCount = 0;
+    var nfcPlayoffCount = 0;
+
+    $(function () {
+        //
+        $.validator.addMethod("homeTeamSelected", function (value, element) {
+            var hid = $("#addGame_hidHomeTeamId").val();
+            return hid != '' || hid != 0;
+        }, "Please select a team from the list...don't just type the name!");
+
+        $.validator.addMethod("awayTeamSelected", function (value, element) {
+            var aid = $("#addGame_hidAwayTeamId").val();
+            return aid != '' || aid != 0;
+        }, "Please select a team from the list...don't just type the name!");
+
+        $.validator.addMethod("timeAMPM", function (value, element) {
+            var re = /^[0-1]?[0-9]{1}:[0-5]{1}[0-9]{1} (AM|PM|am|pm)$/;
+            return re.test(value);
+
+        }, "Please enter a time in the format H:MM AM or PM");
+
+        //
+        $("#frmAddGame").validate({
+            errorElement: "div",
+            rules: {
+                addGame_txtAwayTeam: {
+                    required: true,
+                    awayTeamSelected: true
+                },
+                addGame_txtHomeTeam: {
+                    required: true,
+                    homeTeamSelected: true
+                }
+            }
+        });
+
+
+        $("#btnCalcPSPicks").click(function () {
+
+            $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
+            $.post('@Url.Action("CalcPsPicks", "MyPredict")', null, function (data) {
+
+                $("#dlgSaving").dialog('close');
+                if (data == 'success')
+                    showTheErrorDialog('You successfully calculated the playoff and superbowl picks for the current season');
+            });
+
+        });
+
+
+        $("#btnLeaderBoard").click(function () {
+
+            $("#dlgLeaderBoard").dialog();
+
+        });
+
+        $("#btnSaveChanges").click(function () {
+
+            // post the form
+            var seriForm = serializePickForm();
+            postThePickForm(true, false, seriForm);
+
+        });
+
+
+        $("#frmSaveSeason").validate({
+
+            errorElement: "div",
+            rules: {
+                saveSeason_txtSeasonStartDate: {
+                    required: true
+                },
+                saveSeason_txtSeasonWeeks: {
+                    required: true,
+                    number: true,
+                    range: [1, 30]
+                }
+            }
+        });
+
+
+        $(".datetime_picker").datetimepicker({ ampm: true, minDate: '0D', maxDate: '+1Y' });
+        $(".datetime_picker_open_game").datetimepicker(
+            {
+                ampm: true,
+                onClose: function (dateText, inst) {
+                    $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
+                    dateTimePickerClosed(dateText, $(this).attr("gameid"), $(this), true);
+                }
+            }
+        );
+        $(".date_picker_open").datepicker();
+        $(".date_picker").datepicker({ minDate: '0D', maxDate: '+1Y' });
+
+        $("#btnMakeStandardPicks").click(function () {
+            showTheAskDialog('Are you sure you want to make these picks this week\'s current standard picks?');
+            var currForm = getTheCurrentForm();
+            var areSp = currForm + ' .are-standard-picks';
+            $(areSp).val('true');
+            $("#dlgAsk").dialog({
+                modal: true,
+                autoOpen: true,
+                buttons: {
+                    'OK': function () {
+                        $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
+                        var seriForm = serializePickForm();
+                        // post
+                        $.post('@Url.Action("AcceptPicks","MyPredict")', seriForm, function (data) {
+                            $("#dlgSaving").dialog("close");
+                            $("#dlgAsk").dialog("close");
+                            $(areSp).val('false');
+                        });
+                    },
+                    'Cancel': function () {
+                        $("#dlgAsk").dialog("close");
+                    }
+                }
+            });
+        });
+
+        $("#btnUpdateSeason").click(function () {
+
+            $("#dlgSaveSeason").dialog({
+                autoOpen: true,
+                modal: true,
+                width: 350,
+                buttons: {
+                    "Save Season": function () {
+                        $("#divSaveSeasonLoading").fadeIn();
+                        $.post('@Url.Action("GetCurrentSeason", "MyPredict")', null, function (data) {
+
+                            $("#divSaveSeasonLoading").hide();
+
+                            var currentSelected = $("#saveSeason_chkCurrent").is(":checked");
+                            var currentSeason = data.Id;
+
+                            var selectedSeason = $("#saveSeason_hidSeasonId").val();
+                            if (selectedSeason == '') selectedSeason = 0;
+
+                            var newSeasonDate = new Date();
+                            newSeasonDate = $("#saveSeason_txtSeasonStartDate").datepicker('getDate');
+
+                            if (selectedSeason != currentSeason && currentSelected && newSeasonDate.getFullYear != data.SeasonYear) {
+
+                                showTheAskDialog("Are you sure you want to set the " + newSeasonDate.getFullYear() + " Season to the current season?  Note: It will set the " + data.Season + " as closed if you accept.  It will also cause the page to refresh to load the new season.");
+
+                                $("#dlgAsk").dialog({
+                                    modal: true,
+                                    autoOpen: true,
+                                    buttons: {
+                                        'OK': function () {
+                                            $("#divSaveSeasonLoading").fadeIn();
+                                            $.post('@Url.Action("SaveSeason", "MyPredict")',
+                                            {
+                                                startDate: $("#saveSeason_txtSeasonStartDate").val(),
+                                                weeks: $("#saveSeason_txtSeasonWeeks").val(),
+                                                id: selectedSeason,
+                                                dId: currentSeason
+                                            },
+                                            function () { window.location = '@Url.Action("Index","MyPredict")'; }
+                                            , "json");
+                                            //
+                                            $(this).dialog("close");
+                                        },
+                                        'No Way!': function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                            else if (selectedSeason == currentSeason && !currentSelected) {
+
+                                showTheAskDialog("You cannot set the current season to in-active unless you choose another to be active.  Please either add a new season, or edit another and set as current");
+
+                                $("#dlgAsk").dialog({
+                                    modal: true,
+                                    autoOpen: true,
+                                    buttons: {
+                                        'OK': function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                            else if (selectedSeason == 0 && !currentSelected) {
+
+                                showTheAskDialog("You cannot add an inactive season.  Please either add a new season and set it to active, or edit the current season.");
+
+                                $("#dlgAsk").dialog({
+                                    modal: true,
+                                    autoOpen: true,
+                                    buttons: {
+                                        'OK': function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+
+
+                            }
+                            else if (newSeasonDate.getFullYear == data.SeasonYear) {
+
+                                showTheAskDialog("You cannot have two seasons in the same year.  Please either edit the season you are looking to modify or create a new season in another year.");
+
+                                $("#dlgAsk").dialog({
+                                    modal: true,
+                                    autoOpen: true,
+                                    buttons: {
+                                        'OK': function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+
+                                $("#divSaveSeasonLoading").fadeIn();
+
+                                $.post('@Url.Action("SaveSeason", "MyPredict")',
+                                    {
+                                        startDate: $("#saveSeason_txtSeasonStartDate").val(),
+                                        weeks: $("#saveSeason_txtSeasonWeeks").val(),
+                                        id: selectedSeason,
+                                        dId: "0"
+                                    },
+                                function () { window.location = '@Url.Action("Index","MyPredict")'; },
+                                "json");
+                            }
+                        },
+                        "json");
+                    },
+                    "Cancel": function () {
+                        var validator = $("#frmSaveSeason").validate();
+                        validator.resetForm();
+                        $("#saveSeason_txtSeasonStartDate").val('');
+                        $("#saveSeason_chkCurrent").prop("checked", false);
+                        $("#saveSeason_txtSeasonWeeks").val('');
+                        $("#saveSeason_hidSeasonId").val('');
+                        $("#saveSeason_txtChooseSeason").val('');
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        });
+
+
+
+
+
+        $("#btnAddGame").click(function () {
+
+            $('#dlgAddGame').dialog(
+            {
+                autoOpen: true,
+                modal: true,
+                width: 350,
+                buttons: {
+                    "Save Game": function () {
+                        if ($("#frmAddGame").valid()) {
+                            //
+                            $.ajax({
+                                url: '@Url.Action("AddGame", "MyPredict")',
+                                dataType: "json",
+                                type: "POST",
+                                data: ({
+                                    homeTeamId: $("#addGame_hidHomeTeamId").val(),
+                                    awayTeamId: $("#addGame_hidAwayTeamId").val(),
+                                    gameDateTime: $("#addGame_txtGameDate").val(),
+                                    gameType: $("#addGame_kindOfGame option:selected").val(),
+                                    week: parseInt(currentTab + 1)
+                                }),
+                                success: function () {
+                                    $("#divAddGameSuccess").fadeIn("slow", function () {
+                                        $("#tabs").tabs("load", currentTab);
+                                        var validator = $("#frmAddGame").validate();
+                                        validator.resetForm();
+                                        $("#addGame_hidHomeTeamId").val(0);
+                                        $("#addGame_hidAwayTeamId").val(0);
+                                        $("#addGame_txtHomeTeam").val('');
+                                        $("#addGame_txtAwayTeam").val('');
+                                        $("#addGame_txtGameDate").val('');
+                                        $("#addGame_kindOfGame option[value='R']").attr("selected", true);
+                                        window.setTimeout(function () {
+                                            $("#divAddGameSuccess").fadeOut("slow");
+                                        }, 5000);
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    "Cancel": function () {
+                        var validator = $("#frmAddGame").validate();
+                        validator.resetForm();
+                        $("#addGame_hidHomeTeamId").val(0);
+                        $("#addGame_hidAwayTeamId").val(0);
+                        $("#addGame_txtHomeTeam").val('');
+                        $("#addGame_txtAwayTeam").val('');
+                        $("#addGame_txtGameDate").val('');
+                        $("#addGame_txtGameTime").val('');
+                        $("#addGame_kindOfGame option[value='R']").attr("selected", true);
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+        });
+
+        $("#saveSeason_txtChooseSeason").autocomplete({
+
+            source: function (req, res) {
+                $.post('@Url.Action("SearchSeason", "MyPredict")',
+                    { term: req.term },
+                    function (data) {
+                        res($.map(data, function (item) {
+                            return {
+                                label: item.Season,
+                                value: item.Season,
+                                id: item.Id,
+                                startDate: item.StartDateDisplay,
+                                weeks: item.Weeks,
+                                isCurrent: item.IsCurrent
+                            }
+                        }))
+                    }
+                );
+            },
+            select: function (e, ui) {
+                $("#saveSeason_txtSeasonStartDate").val(ui.item.startDate);
+                $("#saveSeason_chkCurrent").prop("checked", ui.item.isCurrent);
+                $("#saveSeason_txtSeasonWeeks").val(ui.item.weeks);
+                $("#saveSeason_hidSeasonId").val(ui.item.id);
+            }
+        });
+
+
+
+        $("#addGame_txtAwayTeam").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SearchTeams", "MyPredict")',
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.TeamName,
+                                value: item.TeamName,
+                                id: item.Id
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (e, ui) {
+                $("#addGame_hidAwayTeamId").val(ui.item.id);
+            }
+        });
+
+        $("#addGame_txtHomeTeam").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SearchTeams", "MyPredict")',
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.TeamName,
+                                value: item.TeamName,
+                                id: item.Id
+                            }
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (e, ui) {
+                $("#addGame_hidHomeTeamId").val(ui.item.id);
+            }
+        });
+
+
+
+
+        // setup the tabs
+        $("#tabs").tabs({
+            // don't cache the return
+            ajaxOptions: { cache: false },
+            // when a tab is loaded
+            load: function (event, ui) {
+                // close the loading dialog
+                $("#dlgSaving").dialog("close");
+                // wire-up the select lists
+                wireUpSelectLists();
+                wireUpPlayoffSuperbowlLists();
+                wireUpDeleteGame();
+                wireUpCountdowns();
+                // date pickers
+                $(".datetime_picker_open_game").datetimepicker(
+                {
+                    ampm: true,
+                    onClose: function (dateText, inst) {
+                        $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
+                        dateTimePickerClosed(dateText, $(this).attr("gameid"), $(this), true);
+
+                    }
+                });
+                $(".date_picker_open").datepicker();
+                $(".date_picker").datepicker({ minDate: '0D', maxDate: '+1Y' });
+                // buttons
+                $("input[type='button'], input[type='submit']").button();
+            },
+            // when a tab is selected
+            select: function (event, ui) {
+                // post the form
+                var seriForm = serializePickForm();
+                postThePickForm(false, false, seriForm);
+                // set the current tab index
+                currentTab = ui.index;
+            }
+        });
+    });
+
+    function wireUpCountdowns() {
+
+
+        $(".countdown").each(function () {
+            var gameDateString = $(this).attr("data-startTime").toString();
+            var gameDate = new Date(gameDateString);
+            $(this).countdown({ until: gameDate, layout: '{dn} days, {hn}h {mn}m {sn}s to gametime.', timezone: -7 });
+        });
+    
+    }
+
+    function serializePickForm() {
+        // what form are we interested in saving?
+        var theForm = "#PickForm_Week_" + parseInt(currentTab + 1);
+        // serialize the form
+        return $(theForm).serialize();
+    }
+
+    function getTheCurrentForm() {
+
+        return "#PickForm_Week_" + parseInt(currentTab + 1).toString();
+
+    }
+
+    function postThePickForm(shouldICloseSavingDialog, areStandardPicks, seralizedForm) {
+        // show the saving dialog
+        $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
+        // post
+        $.post('@Url.Action("AcceptPicks","MyPredict")', seralizedForm, function (data) {
+            if (shouldICloseSavingDialog) {
+                $("#dlgSaving").dialog("close");
+            }
+        });
+    }
+
+    function wireUpDeleteGame() {
+
+        $(".btn-delete-game").click(function () {
+
+            var gameId = $(this).attr("data-gameid");
+            showTheAskDialog('Are you sure you want to delete this game?');
+            $("#dlgAsk").dialog({
+                modal: true,
+                autoOpen: true,
+                buttons: {
+                    'OK': function () {
+                        $.post('@Url.Action("DeleteGame","MyPredict")', { gameId: gameId }, function (data) {
+
+                            $("#tabs").tabs("load", currentTab);
+                            $("#dlgAsk").dialog("close");
+
+                        }, "json");
+                    },
+                    'Cancel': function () {
+                        $("#dlgAsk").dialog("close");
+                    }
+                }
+            });
+
+        });
+    }
+
+
+    function wireUpSelectLists() {
+
+        $('select[name^=MyPicks]').change(function () {
+            // List of ids that are selected in all select elements
+            var selected = $(this).val();
+            var id = $(this).attr("id");
+            $(this).animate({ backgroundColor: "#ffffff" }, 1000);
+
+            // Walk through every select option and enable if not 
+            // in the list and not already selected
+            $("select[id!=" + id + "][name^=MyPicks] option").each(function () {
+                if ($(this).parent().attr("id").indexOf("MyPicks") === 0) {
+                    if ($(this).is(":selected") && selected === $(this).val()) {
+                        $(this).parent().val('0');
+                        $(this).parent().animate({ backgroundColor: "#ff9999" }, 1000);
+                    }
+                }
+            });
+        });
+
+    }
+
+    function wireUpPlayoffSuperbowlLists() {
+    
+        var week = parseInt(currentTab + 1);
+        $('.ps-' + week + ' > input:checkbox').filter('[id*="_team_"]').click(function () {
+
+            var afc = $(this).attr("id").indexOf("afc") > -1;
+            var nfc = $(this).attr("id").indexOf("nfc") > -1;
+            var playoff = $(this).attr("id").indexOf("playoff") > -1;
+            var superbowl = $(this).attr("id").indexOf("superbowl") > -1;
+            var checked = $(this).is(":checked");
+
+            var afcPlayoffChecked = $('.ps-' + week + ' > input:checkbox:checked').filter('[id^="afc_team_playoff"]').length;
+            var nfcPlayoffChecked = $('.ps-' + week + ' > input:checkbox:checked').filter('[id^="nfc_team_playoff"]').length;
+            var afcSuperbowlChecked = $('.ps-' + week + ' > input:checkbox:checked').filter('[id^="afc_team_superbowl"]').length;
+            var nfcSuperbowlChecked = $('.ps-' + week + ' > input:checkbox:checked').filter('[id^="nfc_team_superbowl"]').length;
+
+            var cAfcPlayoff = afc && playoff && checked;
+            var cNfcPlayoff = nfc && playoff && checked;
+            var cAfcSuperbowl = afc && superbowl && checked;
+            var cNfcSuperbowl = nfc && superbowl && checked;
+
+            var message = "You are trying to select more than [number] [type] teams in the [conference].  Please de-select a team before trying to select another.";
+
+            if (cAfcPlayoff && afcPlayoffChecked > 6) {
+                // we already have 6 acf teams selected
+                alert(message.replace("[number]", "6").replace("[type]", "playoff").replace("[conference]", "AFC"));
+                return false;
+            }
+            else if (cNfcPlayoff && nfcPlayoffChecked > 6) {
+                // we already have 6 acf teams selected
+                alert(message.replace("[number]", "6").replace("[type]", "playoff").replace("[conference]", "NFC"));
+                return false;
+            }
+            else if (cNfcSuperbowl && nfcSuperbowlChecked > 1) {
+                // we already have 2 ncf teams selected
+                alert(message.replace("[number]", "1").replace("[type]", "superbowl").replace("[conference]", "NFC"));
+                return false;
+            }
+            else if (cAfcSuperbowl && afcSuperbowlChecked > 1) {
+                // we already have 2 acf teams selected
+                alert(message.replace("[number]", "1").replace("[type]", "superbowl").replace("[conference]", "AFC"));
+                return false;
+            }
+        });
+
+
+
+    }
+
+    function dateTimePickerClosed(gameDateTime, gameId, obj, closeSavingDialog) {
+        $.post('@Url.Action("SaveGame", "MyPredict")', { gameId: gameId, gameDateTime: gameDateTime }, function (data) {
+            // do we need to close the saving dialog
+            if (closeSavingDialog)
+            // close it
+                $("#dlgSaving").dialog("close");
+            // did we get back a success?
+            if (data == 'success') {
+                // animate the background
+                obj.animate({ backgroundColor: '#16cd0a' }, 2000, "", function () {
+                    // animate it back to white
+                    obj.animate({ backgroundColor: '#fff' }, 200, "", function () {
+
+                        $("#tabs").tabs("load", currentTab);
+
+                    });
+                });
+            }
+            else {
+                showTheErrorDialog("There was an error saving your date and time change to this game.  Please try again.");
+            }
+        });
+    }
+
+    function showTheErrorDialog(msg) {
+
+        $("#dlgError").html('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span><span class="emphasis">' + msg + '</span>');
+        $("#dlgError").dialog({ modal: true, autoOpen: true });
+    }
+
+    function showTheAskDialog(msg) {
+
+        $("#dlgAsk").html('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span><span class="emphasis">' + msg + '</span>');
+        
+    }
+
+    
+
+
+</script>

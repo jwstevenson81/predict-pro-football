@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPF", "PPF\PPF.csproj", "{C2013808-C68E-408A-A093-7CAB026DF980}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPF.Tests", "PPF.Tests\PPF.Tests.csproj", "{CFC67A82-8767-4B83-8A0D-2337A5C5C2C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Dependencies", "1. Dependencies", "{382904E4-E299-4DFA-BDA6-EFBD97D3A1E7}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Fluentnhibernate 1.2.0.694\Antlr3.Runtime.dll = Dependencies\Fluentnhibernate 1.2.0.694\Antlr3.Runtime.dll
+		Dependencies\AutoMapper.dll = Dependencies\AutoMapper.dll
+		Dependencies\Fluentnhibernate 1.2.0.694\Castle.Core.dll = Dependencies\Fluentnhibernate 1.2.0.694\Castle.Core.dll
+		Dependencies\Fluentnhibernate 1.2.0.694\FluentNHibernate.dll = Dependencies\Fluentnhibernate 1.2.0.694\FluentNHibernate.dll
+		Dependencies\Fluentnhibernate 1.2.0.694\Iesi.Collections.dll = Dependencies\Fluentnhibernate 1.2.0.694\Iesi.Collections.dll
+		Dependencies\Moq.dll = Dependencies\Moq.dll
+		Dependencies\Fluentnhibernate 1.2.0.694\NHibernate.ByteCode.Castle.dll = Dependencies\Fluentnhibernate 1.2.0.694\NHibernate.ByteCode.Castle.dll
+		Dependencies\Fluentnhibernate 1.2.0.694\NHibernate.dll = Dependencies\Fluentnhibernate 1.2.0.694\NHibernate.dll
+		Dependencies\Fluentnhibernate 1.2.0.694\Remotion.Data.Linq.dll = Dependencies\Fluentnhibernate 1.2.0.694\Remotion.Data.Linq.dll
+		Dependencies\StructureMap.AutoMocking.dll = Dependencies\StructureMap.AutoMocking.dll
+		Dependencies\StructureMap.dll = Dependencies\StructureMap.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Web", "2. Web", "{A5B57F75-1AB0-4C00-AA07-9305746E4419}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Test", "4. Test", "{7A26796D-C617-4A2B-9343-BBC088B35F65}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Manager", "3. Manager", "{9B44309D-8F15-4D48-84E7-49B5F9E2B29E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PPFUserManager", "PPFUserManager\PPFUserManager.csproj", "{2C6003E2-06BD-49CC-A31E-D9D3A203A200}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2013808-C68E-408A-A093-7CAB026DF980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2013808-C68E-408A-A093-7CAB026DF980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2013808-C68E-408A-A093-7CAB026DF980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2013808-C68E-408A-A093-7CAB026DF980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC67A82-8767-4B83-8A0D-2337A5C5C2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC67A82-8767-4B83-8A0D-2337A5C5C2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC67A82-8767-4B83-8A0D-2337A5C5C2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC67A82-8767-4B83-8A0D-2337A5C5C2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6003E2-06BD-49CC-A31E-D9D3A203A200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6003E2-06BD-49CC-A31E-D9D3A203A200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6003E2-06BD-49CC-A31E-D9D3A203A200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6003E2-06BD-49CC-A31E-D9D3A203A200}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C2013808-C68E-408A-A093-7CAB026DF980} = {A5B57F75-1AB0-4C00-AA07-9305746E4419}
+		{2C6003E2-06BD-49CC-A31E-D9D3A203A200} = {A5B57F75-1AB0-4C00-AA07-9305746E4419}
+		{CFC67A82-8767-4B83-8A0D-2337A5C5C2C8} = {7A26796D-C617-4A2B-9343-BBC088B35F65}
+	EndGlobalSection
+EndGlobal

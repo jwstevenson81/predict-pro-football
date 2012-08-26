@@ -1,0 +1,52 @@
+﻿@model PPF.Models.LogOnModel
+@{
+    ViewBag.Title = "Gridiron Predict";
+}
+<div style="width: 50%; padding-right: 25px; border-right: 1px solid #E5E5E5;">
+    <h1>
+        Gridiron Predict</h1>
+    <h2 style="margin: 10px 0 2px 0;">FINALLY!!!!</h2>
+<p style="margin-top: 0;">Football season has arrived and with it comes Gridiron Predict.
+Over the past few seasons, a fan based prediction game that incorporates an entire professional football season has been created.
+Its all free fun.  Register and make some picks.  The "How to Pick" tab gives easy step by step instructions but the basic premise is accumulating points by making predictions on the teams that you believe will go to the Playoff and Super Bowl as well as assigning confidence points to the teams that you believe will win each game of each week.</p>
+<h2 style="margin: 10px 0 2px 0;">
+For example:</h2>
+<ul style="margin-top: 0; padding-top: 0; padding-left: 15px;">
+<li>In week 1, 16 games will take place.  Therefore you use points 1-16, one time each.</li>
+<li>In week 1, as in every week of the regular season, you will pick 6 teams you believe will go to the Playoffs from the NFC and 6 teams that you believe will go to the Playoffs from the AFC.  You will also pick one team from each conference that you believe will go to the Super Bowl.
+<ul>
+    <li>The Playoff points in week 1 are worth 17 points each, because the regular season has 17 weeks.  In week 2 the picks are worth 16 points.  
+    <li>The Super Bowl points each week are worth double the playoff points.  So in week one, Super Bowl picks are worth 34 points.
+</ul> 
+</li>
+</ul> 
+<p>
+We hope you enjoy the 2011 Season!</p>
+</div>
+<div style="position: absolute; border: solid 1px #ccc; background: #e5e5e5; top: 10px; right: 10px; padding: 0 10px 10px 10px; width: 40%;" class="vertical ui-corner-all">
+    <h1>
+        Sign In</h1>
+    @Html.ValidationSummary(true, "Login was unsuccessful. Please make sure you entered a valid user name and password.")
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class="vertical" }))
+    {
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName)
+               
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password)
+        
+                @Html.LabelFor(m => m.RememberMe)
+                @Html.CheckBoxFor(m => m.RememberMe)
+        
+                <text><div class="formDivider">&nbsp;</div>
+                <input type="submit" value="Log On" />&nbsp;&nbsp;
+                <input type="button" value="Register" id="btnRegister2" /></text>
+    }
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#btnRegister2").click(function () {
+            window.location = '@Url.Action("Register")';
+        });
+    });
+</script>

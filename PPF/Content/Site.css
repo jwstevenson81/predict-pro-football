@@ -1,0 +1,380 @@
+﻿
+table 
+{
+    border-collapse: collapse;
+}
+
+th, td 
+{
+    padding: 4px;
+}
+
+/*----Time Picker CSS----*/
+.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+
+
+/* Layout
+---------------------------------------------------------*/
+html
+{
+    background: #000;
+    font: 13px Segoe UI, Tahoma, Verdana, Sans-Serif;
+}
+
+body
+{
+    width: 95%;
+    margin: 15px auto;
+}
+
+
+
+#wrapper
+{
+    position: relative;
+    width: 100%;
+}
+
+#header
+{
+	position: relative;
+	height: 40px;
+	background: #000;
+	clear: both;
+}
+
+#cntwrapper
+{
+    position: relative;
+    padding: 0;
+    margin: 0;
+    background: #ffffff url('img/faux.png') repeat-y top left;
+    min-height: 200px;
+    border: 1px solid #ffffff;
+}
+
+#nav
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+	width: 180px;
+	background-color: #fff;
+}
+
+#middle
+{
+    position: relative;
+    margin: 0 0 0 182px;
+	background-color: #fff;
+}
+
+#footer
+{
+	clear: both;
+	position: relative;
+	height: 50px;
+	background: #000;
+}
+
+.content
+{
+    padding: 1em;
+}
+
+
+.bottom15px
+{
+    margin-bottom: 15px;
+}
+
+/* Header Footer
+---------------------------------------------------------*/
+#logo
+{
+    float: left;
+    width: 180px;
+    height: 32px;
+    background: transparent url('img/logo.png') no-repeat;
+}
+
+#login
+{
+   float: right;
+}
+
+/* Main nav
+---------------------------------------------------------*/
+#main-nav
+{
+    padding: 0;
+    margin: 0 0 1em 0;
+    width: 100%;
+    list-style: none;
+    font-size: 1.1em;
+}
+
+#main-nav a
+{
+    line-height: 18px;
+    text-decoration: none;
+    border: 0;
+    margin-bottom: 1px;
+    display: block;
+    padding: 4px;
+}
+
+#main-nav a:hover
+{
+    background-color: #d2e5f9;
+    font-weight: bold;
+}
+
+.main-nav-label 
+{
+    color: #666666;
+    padding-top: -1px;
+}
+
+.icon
+{
+    float: left;
+    width: 18px;
+    height: 18px;
+    margin-right: .4em;
+    background: transparent url('img/icons.png') no-repeat;
+}
+
+.icon.home
+{
+    background-position: 0px 0px;
+}
+
+.icon.notepad
+{
+    background-position: -20px 0px;
+}
+
+.icon.question
+{
+    background-position: -39px 0px;    
+}
+
+.icon.profile
+{
+    background-position: -59px 0px;    
+}
+
+
+.divider
+{
+    clear: both;
+    border-bottom: solid 1px #ccc;
+    width: 100%;
+    height: 1px;
+}
+
+
+/* Form Styles
+---------------------------------------------------------*/
+fieldset 
+{
+    padding: 0 1em;
+    border: 1px solid #E5E5E5;
+}
+
+fieldset p
+{
+    margin: .5em 0;
+}
+
+fieldset legend
+{
+    padding: 1em;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+input[type="text"], input[type="password"], textarea 
+{
+	padding: 6px;
+	border: solid 1px #ccc;
+	font-size: 14px;
+	outline: 0;
+}
+
+.input_small 
+{
+	width: 20px;
+}
+
+
+textarea 
+{
+	width: 400px;
+	max-width: 400px;
+	height: 150px;
+	line-height: 150%;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus 
+{
+	border-color: #0096FF;
+}
+
+fieldset label 
+{
+    margin-left: 10px;
+    color: #666666;
+}
+
+fieldset .checkbox label
+{
+    margin: 0;
+}
+
+.picker
+{
+    width: 100%;
+}
+
+.picker td
+{
+    border: 1px solid #cccccc;
+}
+
+
+.vertical label
+{
+    display: block;
+    clear: both;
+    margin-bottom: 3px;
+    margin-left: 0;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.vertical input[type="text"] 
+{
+    display: block;
+    clear: both;
+    margin-bottom: 12px;
+}
+
+div.error
+{
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #cd0a0a;
+}
+
+input.error
+{
+    background-color: #ffeeee;
+    border: solid 1px #a60000;
+}
+
+.vertical .right
+{
+    display: inline;
+}
+
+.vertical .formDivider
+{
+    border-bottom: 1px solid #ccc;
+    margin: 8px 0 20px 0;
+    height: 1px;
+}
+
+
+
+/* Other Styles
+---------------------------------------------------------*/
+h2
+{
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: .5em;
+    clear: both;
+}
+h3 
+{
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: .15em;
+    clear: both;
+
+}
+
+.emphasis
+{
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.input-validation-error
+{
+    border: 1px solid #cd0a0a; 
+    background: #fef1ec;
+    color: #cd0a0a;
+}
+
+.validation-summary-errors
+{
+    font-weight: bold;
+    color: Red;
+}
+
+.winner
+{
+    background-color: #66ff88;
+}
+
+.small
+{
+    font-size: .7em;
+}
+
+h2.score
+{
+    margin-bottom: 5px;
+    font-size: 1.6em;
+}
+
+h2.scorePaddBottom
+{
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+ul.noindent
+{
+    margin: 0;
+    padding: 0;
+}
+
+ul.noindent li
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 5px 0;
+}
+
+#dlgLeaderBoard table 
+{
+    width: 100%;
+}
+
+#dlgLeaderBoard table th,td 
+{
+    padding: 5px;
+}
