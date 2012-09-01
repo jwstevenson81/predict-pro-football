@@ -336,7 +336,7 @@
                                         id: "0",
                                         dId: "0"
                                     },
-                                    function() { window.location = '@Url.Action("Index","MyPredict")'; },
+                                    function () { window.location = '@Url.Action("Index","MyPredict")'; },
                                     "json");
                             }
                         },
@@ -424,7 +424,7 @@
                 $.post('@Url.Action("SearchSeason", "MyPredict")',
                     { term: req.term },
                     function (data) {
-                        res($.map(data, function (item) {
+                        res($.map(data, function(item) {
                             return {
                                 label: item.Season,
                                 value: item.Season,
@@ -432,8 +432,8 @@
                                 startDate: item.StartDateDisplay,
                                 weeks: item.Weeks,
                                 isCurrent: item.IsCurrent
-                            }
-                        }))
+                            };
+                        }));
                     }
                 );
             },
