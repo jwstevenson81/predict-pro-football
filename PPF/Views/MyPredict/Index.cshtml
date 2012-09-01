@@ -235,102 +235,109 @@
                         $("#divSaveSeasonLoading").fadeIn();
                         $.post('@Url.Action("GetCurrentSeason", "MyPredict")', null, function (data) {
 
-                            $("#divSaveSeasonLoading").hide();
+                            if (data) {
+                                $("#divSaveSeasonLoading").hide();
 
-                            var currentSelected = $("#saveSeason_chkCurrent").is(":checked");
-                            var currentSeason = data.Id;
+                                var currentSelected = $("#saveSeason_chkCurrent").is(":checked");
+                                var currentSeason = data.Id;
 
-                            var selectedSeason = $("#saveSeason_hidSeasonId").val();
-                            if (selectedSeason == '') selectedSeason = 0;
+                                var selectedSeason = $("#saveSeason_hidSeasonId").val();
+                                if (selectedSeason == '') selectedSeason = 0;
 
-                            var newSeasonDate = new Date();
-                            newSeasonDate = $("#saveSeason_txtSeasonStartDate").datepicker('getDate');
+                                var newSeasonDate = new Date();
+                                newSeasonDate = $("#saveSeason_txtSeasonStartDate").datepicker('getDate');
 
-                            if (selectedSeason != currentSeason && currentSelected && newSeasonDate.getFullYear != data.SeasonYear) {
+                                if (selectedSeason != currentSeason && currentSelected && newSeasonDate.getFullYear != data.SeasonYear) {
 
-                                showTheAskDialog("Are you sure you want to set the " + newSeasonDate.getFullYear() + " Season to the current season?  Note: It will set the " + data.Season + " as closed if you accept.  It will also cause the page to refresh to load the new season.");
+                                    showTheAskDialog("Are you sure you want to set the " + newSeasonDate.getFullYear() + " Season to the current season?  Note: It will set the " + data.Season + " as closed if you accept.  It will also cause the page to refresh to load the new season.");
 
-                                $("#dlgAsk").dialog({
-                                    modal: true,
-                                    autoOpen: true,
-                                    buttons: {
-                                        'OK': function () {
-                                            $("#divSaveSeasonLoading").fadeIn();
-                                            $.post('@Url.Action("SaveSeason", "MyPredict")',
-                                            {
-                                                startDate: $("#saveSeason_txtSeasonStartDate").val(),
-                                                weeks: $("#saveSeason_txtSeasonWeeks").val(),
-                                                id: selectedSeason,
-                                                dId: currentSeason
+                                    $("#dlgAsk").dialog({
+                                        modal: true,
+                                        autoOpen: true,
+                                        buttons: {
+                                            'OK': function () {
+                                                $("#divSaveSeasonLoading").fadeIn();
+                                                $.post('@Url.Action("SaveSeason", "MyPredict")',
+                                                {
+                                                    startDate: $("#saveSeason_txtSeasonStartDate").val(),
+                                                    weeks: $("#saveSeason_txtSeasonWeeks").val(),
+                                                    id: selectedSeason,
+                                                    dId: currentSeason
+                                                },
+                                                function () { window.location = '@Url.Action("Index","MyPredict")'; }, "json");
+                                                //
+                                                $(this).dialog("close");
                                             },
-                                            function () { window.location = '@Url.Action("Index","MyPredict")'; }
-                                            , "json");
-                                            //
-                                            $(this).dialog("close");
-                                        },
-                                        'No Way!': function () {
-                                            $(this).dialog("close");
+                                            'No Way!': function () {
+                                                $(this).dialog("close");
+                                            }
                                         }
-                                    }
-                                });
-                            }
-                            else if (selectedSeason == currentSeason && !currentSelected) {
+                                    });
+                                } else if (selectedSeason == currentSeason && !currentSelected) {
 
-                                showTheAskDialog("You cannot set the current season to in-active unless you choose another to be active.  Please either add a new season, or edit another and set as current");
+                                    showTheAskDialog("You cannot set the current season to in-active unless you choose another to be active.  Please either add a new season, or edit another and set as current");
 
-                                $("#dlgAsk").dialog({
-                                    modal: true,
-                                    autoOpen: true,
-                                    buttons: {
-                                        'OK': function () {
-                                            $(this).dialog("close");
+                                    $("#dlgAsk").dialog({
+                                        modal: true,
+                                        autoOpen: true,
+                                        buttons: {
+                                            'OK': function () {
+                                                $(this).dialog("close");
+                                            }
                                         }
-                                    }
-                                });
-                            }
-                            else if (selectedSeason == 0 && !currentSelected) {
+                                    });
+                                } else if (selectedSeason == 0 && !currentSelected) {
 
-                                showTheAskDialog("You cannot add an inactive season.  Please either add a new season and set it to active, or edit the current season.");
+                                    showTheAskDialog("You cannot add an inactive season.  Please either add a new season and set it to active, or edit the current season.");
 
-                                $("#dlgAsk").dialog({
-                                    modal: true,
-                                    autoOpen: true,
-                                    buttons: {
-                                        'OK': function () {
-                                            $(this).dialog("close");
+                                    $("#dlgAsk").dialog({
+                                        modal: true,
+                                        autoOpen: true,
+                                        buttons: {
+                                            'OK': function () {
+                                                $(this).dialog("close");
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
 
-                            }
-                            else if (newSeasonDate.getFullYear == data.SeasonYear) {
+                                } else if (newSeasonDate.getFullYear == data.SeasonYear) {
 
-                                showTheAskDialog("You cannot have two seasons in the same year.  Please either edit the season you are looking to modify or create a new season in another year.");
+                                    showTheAskDialog("You cannot have two seasons in the same year.  Please either edit the season you are looking to modify or create a new season in another year.");
 
-                                $("#dlgAsk").dialog({
-                                    modal: true,
-                                    autoOpen: true,
-                                    buttons: {
-                                        'OK': function () {
-                                            $(this).dialog("close");
+                                    $("#dlgAsk").dialog({
+                                        modal: true,
+                                        autoOpen: true,
+                                        buttons: {
+                                            'OK': function () {
+                                                $(this).dialog("close");
+                                            }
                                         }
-                                    }
-                                });
-                            }
-                            else {
+                                    });
+                                } else {
 
-                                $("#divSaveSeasonLoading").fadeIn();
+                                    $("#divSaveSeasonLoading").fadeIn();
 
-                                $.post('@Url.Action("SaveSeason", "MyPredict")',
+                                    $.post('@Url.Action("SaveSeason", "MyPredict")',
                                     {
                                         startDate: $("#saveSeason_txtSeasonStartDate").val(),
                                         weeks: $("#saveSeason_txtSeasonWeeks").val(),
                                         id: selectedSeason,
                                         dId: "0"
                                     },
-                                function () { window.location = '@Url.Action("Index","MyPredict")'; },
-                                "json");
+                                    function () { window.location = '@Url.Action("Index","MyPredict")'; },
+                                    "json");
+                                }
+                            } else {
+                                $.post('@Url.Action("SaveSeason", "MyPredict")',
+                                    {
+                                        startDate: $("#saveSeason_txtSeasonStartDate").val(),
+                                        weeks: $("#saveSeason_txtSeasonWeeks").val(),
+                                        id: "0",
+                                        dId: "0"
+                                    },
+                                    function() { window.location = '@Url.Action("Index","MyPredict")'; },
+                                    "json");
                             }
                         },
                         "json");

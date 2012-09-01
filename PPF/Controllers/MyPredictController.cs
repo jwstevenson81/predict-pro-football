@@ -141,10 +141,5 @@ namespace PPF.Controllers
             return Json(_svc.GetCurrentSeason());
 
         }
-
-        public ActionResult NewInterface()
-        {
-
-        }
     }
 }
