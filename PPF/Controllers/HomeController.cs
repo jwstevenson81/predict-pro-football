@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Globalization;
+using System.Web.Mvc;
 using System.Web.Routing;
 using PPF.Models;
 using System.Web.Security;
@@ -58,6 +59,8 @@ namespace PPF.Controllers
 
         public ActionResult Index()
         {
+            var svc = new SeasonService();
+            ViewBag.SeasonYear = svc.GetCurrentSeason().SeasonYear.ToString(CultureInfo.InvariantCulture);
             return View();
         }
 

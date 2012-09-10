@@ -8,6 +8,7 @@ namespace PPF.Models.ViewModels
     public class LeaderViewModel
     {
         public string UserId { get; set; }
+        public int Week { get; set; }
         public int Points { get; set; }
     }
 

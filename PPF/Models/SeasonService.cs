@@ -24,20 +24,20 @@ namespace PPF.Models
             // get the summed scores for this season
             var scores = (from p in _ctx.Picks
                          where p.Game.Season.IsCurrent && p.IsWinner.HasValue && p.IsWinner.Value
-                         group p by p.UserId
-                         into up
-                         select new LeaderViewModel() {UserId = up.Key, Points = up.Sum(p => p.PointTotal)}).ToList();
+                         orderby p.Game.Week
+                         group p by new { p.Game.Week, p.UserId } into up
+                         select new LeaderViewModel() {Week = up.Key.Week, UserId=up.Key.UserId, Points = up.Sum(p => p.PointTotal)}).ToList();
             //
             var psScores = (from p in _ctx.PlayoffSuperbowlPicks
                            where p.Season.IsCurrent && p.IsWinner
-                           group p by p.UserId
-                           into up
-                           select new LeaderViewModel() {UserId = up.Key, Points = up.Sum(p => p.PointTotal)}).ToList();
+                           orderby p.Week 
+                           group p by new { p.Week, p.UserId } into up
+                           select new LeaderViewModel() {UserId = up.Key.UserId, Week = up.Key.Week, Points = up.Sum(p => p.PointTotal)}).ToList();
 
             foreach (var leaderViewModel in scores)
             {
                 LeaderViewModel model = leaderViewModel;
-                var iPsScores = psScores.Where(p => p.UserId == model.UserId).SingleOrDefault();
+                var iPsScores = psScores.SingleOrDefault(p => p.UserId == model.UserId && p.Week == model.Week);
                 if (iPsScores != null)
                     leaderViewModel.Points += iPsScores.Points;
             }

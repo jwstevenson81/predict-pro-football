@@ -40,23 +40,33 @@
 
 
 <div id="dlgLeaderBoard" style="display: none;" title="@Model.StartDate.Year.ToString() Season Leaderboard">
-<table>
-<thead>
-    <tr>
-        <th class="ui-state-default" style="width: 75%">User</th>
-        <th class="ui-state-default" style="width: 25%">Points</th>
-    </tr>
-</thead>
-<tbody>
-@foreach (var leader in Model.Leaderboard.Leaders)
-{
-    <tr>
-        <td style="width: 75%">@leader.UserId</td>
-        <td style="width: 25%">@leader.Points</td>
-    </tr>
-}
-</tbody>
-</table>
+    @{
+        for (var i = 1; i < 22; i++)
+        {
+            var leaders = Model.Leaderboard.Leaders.Where(l => l.Week == i).ToList();
+            if (leaders.Count > 0)
+            {
+                <h1>Week: @i</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="ui-state-default" style="width: 75%">User</th>
+                            <th class="ui-state-default" style="width: 25%">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var leader in leaders)
+                        {
+                            <tr>
+                                <td style="width: 75%">@leader.UserId</td>
+                                <td style="width: 25%">@leader.Points</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    }
 </div>
 <div id="dlgAddGame" style="display: none;" title="Add A Game">
 <form id="frmAddGame" method="post" action="" class="vertical">
@@ -211,7 +221,7 @@
                         $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
                         var seriForm = serializePickForm();
                         // post
-                        $.post('@Url.Action("AcceptPicks","MyPredict")', seriForm, function (data) {
+                        $.post('@Url.Action("AcceptPicks", "MyPredict")', seriForm, function (data) {
                             $("#dlgSaving").dialog("close");
                             $("#dlgAsk").dialog("close");
                             $(areSp).val('false');
@@ -264,7 +274,7 @@
                                                     id: selectedSeason,
                                                     dId: currentSeason
                                                 },
-                                                function () { window.location = '@Url.Action("Index","MyPredict")'; }, "json");
+                                                function () { window.location = '@Url.Action("Index", "MyPredict")'; }, "json");
                                                 //
                                                 $(this).dialog("close");
                                             },
@@ -325,7 +335,7 @@
                                         id: selectedSeason,
                                         dId: "0"
                                     },
-                                    function () { window.location = '@Url.Action("Index","MyPredict")'; },
+                                    function () { window.location = '@Url.Action("Index", "MyPredict")'; },
                                     "json");
                                 }
                             } else {
@@ -336,7 +346,7 @@
                                         id: "0",
                                         dId: "0"
                                     },
-                                    function () { window.location = '@Url.Action("Index","MyPredict")'; },
+                                    function () { window.location = '@Url.Action("Index", "MyPredict")'; },
                                     "json");
                             }
                         },
@@ -565,7 +575,7 @@
         // show the saving dialog
         $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
         // post
-        $.post('@Url.Action("AcceptPicks","MyPredict")', seralizedForm, function (data) {
+        $.post('@Url.Action("AcceptPicks", "MyPredict")', seralizedForm, function (data) {
             if (shouldICloseSavingDialog) {
                 $("#dlgSaving").dialog("close");
             }
@@ -583,7 +593,7 @@
                 autoOpen: true,
                 buttons: {
                     'OK': function () {
-                        $.post('@Url.Action("DeleteGame","MyPredict")', { gameId: gameId }, function (data) {
+                        $.post('@Url.Action("DeleteGame", "MyPredict")', { gameId: gameId }, function (data) {
 
                             $("#tabs").tabs("load", currentTab);
                             $("#dlgAsk").dialog("close");
