@@ -48,7 +48,8 @@ namespace PPF.Models
 
             Mapper.CreateMap<Season, SeasonViewModel>()
                 .ForMember(m => m.Leaderboard, opt => opt.Ignore())
-                .ForMember(m => m.SeasonPointTotal, opt => opt.Ignore());
+                .ForMember(m => m.SeasonPointTotal, opt => opt.Ignore())
+                .ForMember(m => m.WeeklyLeaderboard, opt => opt.Ignore());
 
 
             Mapper.CreateMap<Season, SeasonSearchViewModel>()

@@ -1,4 +1,5 @@
-﻿@model PPF.Models.ViewModels.SeasonViewModel
+﻿@using PPF.Models.ViewModels
+@model PPF.Models.ViewModels.SeasonViewModel
 @{
     ViewBag.Title = "My Predict";
 }
@@ -6,7 +7,8 @@
 <div style="margin-bottom: 20px;"><span style="font-size: 1.25em; font-weight: bold;">Your score for the @Model.StartDate.Year.ToString() Season:&nbsp;</span> <span style="font-size: 2.2em;">@Model.SeasonPointTotal.ToString()</span>
 </div>
 <div>
-    <input type="button" id="btnLeaderBoard" value="View Leaderboard" />&nbsp;
+    <input type="button" id="btnLeaderBoard" value="View Season Leaderboard" />&nbsp;
+    <input type="button" id="btnWeeklyLeaderBoard" value="View Weekly Leaderboard" />&nbsp;
     <input type="button" id="btnSaveChanges" value="Save My Changes" />&nbsp;
     @if (User.IsInRole("Admins"))
     {
@@ -27,8 +29,12 @@
 </ul>
 </div>
 <div id="dlgSaving" style="display: none;" title="Saving Your Changes">
+    <img src="@Url.Content("~/content/img/ajax-loading.gif")" alt="loading" style="float: left; margin-right: 1em;" />
+    <span class="emphasis">Please wait...we are saving your changes.</span>
+</div>
+<div id="dlgLoading" style="display: none;" title="Loading">
 <img src="@Url.Content("~/content/img/ajax-loading.gif")" alt="loading" style="float: left; margin-right: 1em;" />
-<span class="emphasis">Please wait...we are saving your changes.</span>
+<span class="emphasis">Please wait...Loading.</span>
 </div>
 <div id="dlgError" style="display: none;" title="Uh Oh!  Error...">
     <span class="emphasis"></span>
@@ -38,35 +44,36 @@
 <span class="emphasis"></span>
 </div>
 
-
+<div id="dlgWeeklyLeaderboard" style="display: none;">
+    <table id="tblWeeklyLeaderboard" style="width: 100%;">
+        <thead>
+            <tr>
+                <th class="ui-state-default" style="width: 75%">User</th>
+                <th class="ui-state-default" style="width: 25%">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
 <div id="dlgLeaderBoard" style="display: none;" title="@Model.StartDate.Year.ToString() Season Leaderboard">
-    @{
-        for (var i = 1; i < 22; i++)
-        {
-            var leaders = Model.Leaderboard.Leaders.Where(l => l.Week == i).ToList();
-            if (leaders.Count > 0)
+    <table>
+        <thead>
+            <tr>
+                <th class="ui-state-default" style="width: 75%">User</th>
+                <th class="ui-state-default" style="width: 25%">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var leader in Model.Leaderboard.Leaders)
             {
-                <h1>Week: @i</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="ui-state-default" style="width: 75%">User</th>
-                            <th class="ui-state-default" style="width: 25%">Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var leader in leaders)
-                        {
-                            <tr>
-                                <td style="width: 75%">@leader.UserId</td>
-                                <td style="width: 25%">@leader.Points</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                <tr>
+                    <td style="width: 75%">@leader.UserId</td>
+                    <td style="width: 25%">@leader.Points</td>
+                </tr>
             }
-        }
-    }
+        </tbody>
+    </table>
 </div>
 <div id="dlgAddGame" style="display: none;" title="Add A Game">
 <form id="frmAddGame" method="post" action="" class="vertical">
@@ -116,6 +123,20 @@
     var currentTab = 0;
     var afcPlayoffCount = 0;
     var nfcPlayoffCount = 0;
+    
+    function updateLeaderboard() {
+        // set the title of the weekly leaderboard
+        $("#dlgLoading").dialog({ autoOpen: true, modal: true, height: 110, width: 376 });
+        $.post('@Url.Action("GetWeeklyLeaderboard", "MyPredict")', { week: parseInt(currentTab + 1) }, function (data) {
+
+            $("#tblWeeklyLeaderboard>tbody").html('');
+            $.each(data.Leaders, function (index, item) {
+                $("#tblWeeklyLeaderboard>tbody").append("<tr><td style='width: 75%'>" + item.UserId + "<td><td style='width: 25%'>" + item.Points + "</td></tr>");
+            });
+            $("#dlgWeeklyLeaderboard").dialog({ title: "Week " + parseInt(currentTab + 1) + " Leaderboard" });
+
+        }).complete(function () { $("#dlgLoading").dialog("close"); });
+    }
 
     $(function () {
         //
@@ -135,6 +156,7 @@
 
         }, "Please enter a time in the format H:MM AM or PM");
 
+
         //
         $("#frmAddGame").validate({
             errorElement: "div",
@@ -149,8 +171,6 @@
                 }
             }
         });
-
-
         $("#btnCalcPSPicks").click(function () {
 
             $("#dlgSaving").dialog({ modal: true, autoOpen: true, height: 110, width: 376 });
@@ -162,12 +182,14 @@
             });
 
         });
-
-
         $("#btnLeaderBoard").click(function () {
 
             $("#dlgLeaderBoard").dialog();
 
+        });
+
+        $("#btnWeeklyLeaderBoard").click(function () {
+            updateLeaderboard();
         });
 
         $("#btnSaveChanges").click(function () {
@@ -434,7 +456,7 @@
                 $.post('@Url.Action("SearchSeason", "MyPredict")',
                     { term: req.term },
                     function (data) {
-                        res($.map(data, function(item) {
+                        res($.map(data, function (item) {
                             return {
                                 label: item.Season,
                                 value: item.Season,
@@ -543,6 +565,7 @@
                 postThePickForm(false, false, seriForm);
                 // set the current tab index
                 currentTab = ui.index;
+                $("#dlgWeeklyLeaderboard").dialog("close");
             }
         });
     });

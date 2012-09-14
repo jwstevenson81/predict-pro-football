@@ -32,6 +32,13 @@ namespace PPF.Controllers
         }
 
         [Authorize]
+        public JsonResult GetWeeklyLeaderboard(int week)
+        {
+            var vm = _svc.GetWeeklyLeaderboard(week);
+            return Json(vm);
+        }
+
+        [Authorize]
         [HttpPost]
         public ActionResult AcceptPicks(MyPredictViewModel vm, FormCollection formValues)
         {

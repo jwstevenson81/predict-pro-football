@@ -10,6 +10,7 @@ namespace PPF.Models.ViewModels
         public int NumberOfWeeks { get; set; }
         public bool IsCurrent { get; set; }
         public LeaderboardViewModel Leaderboard { get; set; }
+        public LeaderboardViewModel WeeklyLeaderboard { get; set; }
         public int SeasonPointTotal { get; set; }
 
     }
