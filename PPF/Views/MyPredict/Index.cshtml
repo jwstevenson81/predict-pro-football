@@ -131,7 +131,7 @@
 
             $("#tblWeeklyLeaderboard>tbody").html('');
             $.each(data.Leaders, function (index, item) {
-                $("#tblWeeklyLeaderboard>tbody").append("<tr><td style='width: 75%'>" + item.UserId + "<td><td style='width: 25%'>" + item.Points + "</td></tr>");
+                $("#tblWeeklyLeaderboard>tbody").append("<tr><td style='width: 75%'>" + item.UserId + "</td><td style='width: 25%'>" + item.Points + "</td></tr>");
             });
             $("#dlgWeeklyLeaderboard").dialog({ title: "Week " + parseInt(currentTab + 1) + " Leaderboard" });
 
