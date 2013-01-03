@@ -29,7 +29,8 @@
                     @for (var i = 0; i < Model.MyPicks.Count; i++)
                     {
                         <tr>
-                            <td style="width: 50px; text-align: center;" @if(Model.MyPicks[i].IsWinner) { <text>class="winner"</text> }>
+                            <td style="width: 50px; text-align: center;" @if (Model.MyPicks[i].IsWinner)
+                                                                         { <text>class="winner"</text> }>
                                 @if (Model.MyPicks[i].Game.GameDateTime < DateTime.Now)
                                 {
                                     @Html.DisplayFor(m => m.MyPicks[i].PointTotal)
@@ -57,7 +58,7 @@
                                     {
                                         <text>&nbsp;</text>@Html.TextBoxFor(m => m.MyPicks[i].Game.AwayTeamScore, new { @class = "input_small" })
                                     }
-                                    else 
+                                    else
                                     {
                                         <text>&nbsp;<span class="emphasis">@Html.DisplayFor(m => m.MyPicks[i].Game.AwayTeamScore)</span></text>
                                     }
@@ -104,63 +105,68 @@
                 </tbody>
             </table>
         </div>
-        @if (Model.ShouldHavePlayoffSuperbowlPicks)
-        {
-            <div id="playoff-picks-@Model.CurrentWeek.ToString()" style="margin-top: 20px;">
+        <div id="playoff-picks-@Model.CurrentWeek.ToString()" style="margin-top: 20px;">
             <h2>
                 @if (Model.Disabled)
                 {
-                    <text>Your Playoff and Superbowl Picks for Week @Model.CurrentWeek.ToString()</text>
+                    <text>Your</text> if (Model.ShouldHaveSuperbowlPicksOnly)
+                                      {<text> Superbowl</text>}
+                                      else
+                                      { <text> Playoff and Superbowl</text>}<text> Picks for Week @Model.CurrentWeek.ToString()</text>
                 }
                 else
                 {
-                    <text>Make Your Playoff/Superbowl Picks for Week @Model.CurrentWeek.ToString()</text>
+                    <text>Make Your</text> if (Model.ShouldHaveSuperbowlPicksOnly)
+                                           {<text> Superbowl</text>}
+                                           else
+                                           { <text> Playoff and Superbowl</text>}<text> Picks for Week @Model.CurrentWeek.ToString()</text>
                 }
                 </h2>
                 <p>
-                    Your playoff picks are worth: <span class="emphasis">@Model.PossiblePlayoffPointTotal</span> points.<br />
+                    @if (Model.ShouldHaveSuperbowlPicksOnly == false)
+                    { 
+                        <text>Your playoff picks are worth: <span class="emphasis">@Model.PossiblePlayoffPointTotal</span> points.<br /></text>
+                    }
                     Your superbowl picks are worth: <span class="emphasis">@Model.PossibleSuperbowlPointTotal</span> points.</p>
             <div style="float: left; width: 49%;">
-                
                 @if (!Model.Disabled)
                 {
-                <text>
-                <h3>
-                    NFC</h3>
-                <table class="picker">
+                    <h3>NFC</h3>
+                    <table class="picker">
                     <thead>
                         <tr>
                             <th class="ui-state-default">
                                 Team
                             </th>
-                            <th class="ui-state-default">
-                                Playoff?
-                            </th>
-                            <th class="ui-state-default">
-                                Superbowl?
-                            </th>
+                            @if (!Model.ShouldHaveSuperbowlPicksOnly)
+                            {
+                                <th class="ui-state-default">Playoff?</th>
+                            }
+                            <th class="ui-state-default">Superbowl?</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var team in Model.NfcTeams)
                         {
                             <tr>
-                                <td>@team.TeamName
-                                </td>
+                                <td>@team.TeamName</td>
+                                @if (!Model.ShouldHaveSuperbowlPicksOnly)
+                                {
                                 <td class="ps-@Model.CurrentWeek.ToString()">
                                     @Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_playoff_", team.Id), Model.MyPlayoffPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
                                 </td>
+                                }
                                 <td class="ps-@Model.CurrentWeek.ToString()">@Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_superbowl_", team.Id), Model.MySuperbowlPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-                </text>
                 }
                 else
                 {
-                    <text>
+                    if (!Model.ShouldHaveSuperbowlPicksOnly)
+                    {
                     <h3>NFC Playoff Picks</h3>
                     <table class="picker">
                         <thead>
@@ -177,6 +183,7 @@
                             }
                         </tbody>
                     </table>
+                    }
                     <h3 style="margin-top: 10px;">NFC Superbowl Picks</h3>
                     <table class="picker">
                         <thead>
@@ -193,25 +200,24 @@
                             }
                         </tbody>
                     </table>
-                    </text>
                 }
             </div>
             <div style="float: right; width: 49%;">
-                
                 @if (!Model.Disabled)
                 {
-                <text>
-                <h3>
-                    AFC</h3>
-                <table class="picker">
+                    <h3>AFC</h3>
+                    <table class="picker">
                     <thead>
                         <tr>
                             <th class="ui-state-default">
                                 Team
                             </th>
+                            @if (!Model.ShouldHaveSuperbowlPicksOnly)
+                            {
                             <th class="ui-state-default">
                                 Playoff?
                             </th>
+                            }
                             <th class="ui-state-default">
                                 Superbowl?
                             </th>
@@ -223,19 +229,22 @@
                             <tr>
                                 <td>@team.TeamName
                                 </td>
+                                @if (!Model.ShouldHaveSuperbowlPicksOnly)
+                                {
                                 <td class="ps-@Model.CurrentWeek.ToString()">@Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_playoff_", team.Id), Model.MyPlayoffPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
                                 </td>
+                                }
                                 <td class="ps-@Model.CurrentWeek.ToString()">@Html.CheckBox(string.Concat(team.Conference.ToLower(), "_team_superbowl_", team.Id), Model.MySuperbowlPicks.Where(p => p.Team.Id.Equals(team.Id)).Count().Equals(1), Model.Disabled ? new { disabled = "disabled" } : null)
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-                </text>
                 }
                 else
                 {
-                    <text>
+                    if (!Model.ShouldHaveSuperbowlPicksOnly)
+                    {
                     <h3>AFC Playoff Picks</h3>
                     <table class="picker">
                         <thead>
@@ -252,6 +261,7 @@
                             }
                         </tbody>
                     </table>
+                    }
                     <h3 style="margin-top: 10px;">AFC Superbowl Pick</h3>
                     <table class="picker">
                         <thead>
@@ -268,13 +278,13 @@
                             }
                         </tbody>
                     </table>
-                    </text>
                 }
+                </div>
             </div>
-            <div style="clear: both;">
-                &nbsp;</div>
-        </div>
-        }
     </div>
-    
+    <div style="clear: both;">&nbsp;</div>
 }
+
+                    
+
+          

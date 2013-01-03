@@ -24,6 +24,7 @@ namespace PPF.Models.ViewModels
         public int PossiblePlayoffPointTotal { get; set; }
         public int PossibleSuperbowlPointTotal { get; set; }
         public bool ShouldHavePlayoffSuperbowlPicks { get; set; }
+        public bool ShouldHaveSuperbowlPicksOnly { get; set; }
 
         public List<int> PointList { get; set; }
 

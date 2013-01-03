@@ -150,10 +150,12 @@ namespace PPF.Models
             var pfGames = games.Where(g => g.IsPlayoff).Count();
             var sGames = games.Where(g => g.IsSuperbowl).Count();
             var showPlayoffSuperbowlPicks = false;
+            var showSuperbowlPicksOnly = false;
             var maxRWeek = 0;
             if (games.Count > 0)
                 maxRWeek = _ctx.Games.GetMaxRegularSeasonWeekCurrentSeason();
             showPlayoffSuperbowlPicks = (pfGames == 0 && sGames == 0);
+            showSuperbowlPicksOnly = (pfGames == games.Count);
             if (pfGames == games.Count && games.Count == 4)
             {
                 // this is the first playoff week
@@ -209,10 +211,22 @@ namespace PPF.Models
                 WeekPointTotal = pointTotal,
                 PointList = pointsList,
                 PossiblePlayoffPointTotal = maxRWeek > 0 ? (maxRWeek - week) + 1 : 0,
-                PossibleSuperbowlPointTotal = maxRWeek > 0 ? ((maxRWeek - week) + 1) * 2 : 0,
                 ShouldHavePlayoffSuperbowlPicks = showPlayoffSuperbowlPicks,
-                PlayoffSuperbowlPointTotal = psPointTotal
+                PlayoffSuperbowlPointTotal = psPointTotal,
+                ShouldHaveSuperbowlPicksOnly = showSuperbowlPicksOnly
             };
+            // set the superbowl possible points
+            if (maxRWeek > 0 && !vm.ShouldHaveSuperbowlPicksOnly)
+                vm.PlayoffSuperbowlPointTotal = ((maxRWeek - week) + 1) * 2;
+            else if (vm.ShouldHaveSuperbowlPicksOnly && week == maxRWeek + 1)
+                vm.PossibleSuperbowlPointTotal = 30;
+            else if (vm.ShouldHavePlayoffSuperbowlPicks && week == maxRWeek + 2)
+                vm.PossibleSuperbowlPointTotal = 20;
+            else if (vm.ShouldHavePlayoffSuperbowlPicks && week == maxRWeek + 3)
+                vm.PossibleSuperbowlPointTotal = 10;
+            else
+                vm.PossibleSuperbowlPointTotal = 0;
+
             // return the newely created view model
             return vm;
         }
