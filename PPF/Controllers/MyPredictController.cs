@@ -95,9 +95,16 @@ namespace PPF.Controllers
         [HttpPost]
         public JsonResult DeleteGame(string gameId)
         {
-            var gid = int.Parse(gameId);
-            _svc.DeleteGame(gid);
-            return Json("success");
+            try
+            {
+                var gid = int.Parse(gameId);
+                _svc.DeleteGame(gid);
+                return Json("success");
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.ToString());
+            }
         }
 
         

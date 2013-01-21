@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -188,6 +189,7 @@ namespace PPF.Models
         private ObjectSet<Team> _Teams;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -247,11 +249,11 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -290,6 +292,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -584,6 +587,7 @@ namespace PPF.Models
         partial void OnUpdateByChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -670,6 +674,7 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -700,6 +705,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -898,6 +904,7 @@ namespace PPF.Models
         partial void OnUpdateByChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -940,6 +947,7 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -980,6 +988,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1202,6 +1211,7 @@ namespace PPF.Models
         partial void OnTeam_IdChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1282,6 +1292,7 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1314,6 +1325,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1440,6 +1452,7 @@ namespace PPF.Models
         partial void OnNumberOfWeeksChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1510,6 +1523,7 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1540,6 +1554,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -1738,6 +1753,7 @@ namespace PPF.Models
         partial void OnActiveChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -1780,6 +1796,7 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1816,6 +1833,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -2062,6 +2080,7 @@ namespace PPF.Models
         partial void OnActiveChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -2104,6 +2123,7 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2134,6 +2154,7 @@ namespace PPF.Models
         }
 
         #endregion
+
         #region Primitive Properties
     
         /// <summary>
@@ -2236,6 +2257,7 @@ namespace PPF.Models
         partial void OnDivisionChanged();
 
         #endregion
+
     
         #region Navigation Properties
     
@@ -2262,8 +2284,10 @@ namespace PPF.Models
         }
 
         #endregion
+
     }
 
     #endregion
+
     
 }

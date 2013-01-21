@@ -147,15 +147,13 @@ namespace PPF.Models
             var psPointTotal = psPicks.Where(p => p.IsWinner).Sum(p => p.PointTotal);
             // set the points list
             var pointsList = new List<int>();
-            var pfGames = games.Where(g => g.IsPlayoff).Count();
-            var sGames = games.Where(g => g.IsSuperbowl).Count();
-            var showPlayoffSuperbowlPicks = false;
-            var showSuperbowlPicksOnly = false;
+            var pfGames = games.Count(g => g.IsPlayoff);
+            var sGames = games.Count(g => g.IsSuperbowl);
             var maxRWeek = 0;
             if (games.Count > 0)
                 maxRWeek = _ctx.Games.GetMaxRegularSeasonWeekCurrentSeason();
-            showPlayoffSuperbowlPicks = (pfGames == 0 && sGames == 0);
-            showSuperbowlPicksOnly = (pfGames == games.Count);
+            var showPlayoffSuperbowlPicks = (pfGames == 0 && sGames == 0);
+            var showSuperbowlPicksOnly = (pfGames == games.Count);
             if (pfGames == games.Count && games.Count == 4)
             {
                 // this is the first playoff week
@@ -178,7 +176,7 @@ namespace PPF.Models
             else
             {
                 // this is a normal week
-                for (int i = 0; i <= games.Count; i++)
+                for (var i = 0; i <= games.Count; i++)
                 {
                     pointsList.Add(i);
                 }
@@ -186,11 +184,9 @@ namespace PPF.Models
 
             if (picks.Count > 0)
             {
-                foreach (var pick in _ctx.Picks.GetCurrentWeekPicks(week, userId).Where(p=>p.Game.GameDateTime < DateTime.Now).ToList())
+                foreach (var pick1 in _ctx.Picks.GetCurrentWeekPicks(week, userId).Where(p=>p.Game.GameDateTime < DateTime.Now).ToList().Where(pick1 => pick1.PointTotal > 0))
                 {
-                    var pick1 = pick;
-                    if (pick1.PointTotal > 0)
-                        pointsList.RemoveAll(p => p == pick1.PointTotal);
+                    pointsList.RemoveAll(p => p == pick1.PointTotal);
                 }
             }
             
@@ -213,7 +209,8 @@ namespace PPF.Models
                 PossiblePlayoffPointTotal = maxRWeek > 0 ? (maxRWeek - week) + 1 : 0,
                 ShouldHavePlayoffSuperbowlPicks = showPlayoffSuperbowlPicks,
                 PlayoffSuperbowlPointTotal = psPointTotal,
-                ShouldHaveSuperbowlPicksOnly = showSuperbowlPicksOnly
+                ShouldHaveSuperbowlPicksOnly = showSuperbowlPicksOnly,
+                IsSuperbowlWeek = sGames == 1
             };
             // set the superbowl possible points
             if (maxRWeek > 0 && !vm.ShouldHaveSuperbowlPicksOnly)
@@ -372,27 +369,8 @@ namespace PPF.Models
         public void DeleteGame(int gameId)
         {
             // delete the game
-            var game = _ctx.Games.Where(g => g.Id == gameId).Single();
-            _ctx.Games.DeleteObject(game);
-            _ctx.SaveChanges();
-            // find all the picks related to this game and invalidate them
-            var picks = _ctx.Picks.Where(p => p.Game.Id == gameId).ToList();
-            var psPicks = _ctx.PlayoffSuperbowlPicks.Where(p => p.Team_Id == game.HomeTeam_Id || p.Team_Id == game.AwayTeam_Id).ToList();
-
-            foreach (var pick in picks)
-            {
-                _ctx.Picks.DeleteObject(pick);
-            }
-            _ctx.SaveChanges();
-
-            foreach (var playoffSuperbowlPick in psPicks)
-            {
-                if ((game.IsPlayoff && playoffSuperbowlPick.IsPlayoff) || (game.IsSuperbowl && playoffSuperbowlPick.IsSuperbowl))
-                {
-                    playoffSuperbowlPick.IsWinner = false;
-                    playoffSuperbowlPick.PointTotal = 0;
-                }
-            }
+            var game = _ctx.Games.Single(g => g.Id == gameId);
+           _ctx.Games.DeleteObject(game);
             _ctx.SaveChanges();
             // recalculate the playoff and superbowl picks
             if (game.IsPlayoff || game.IsSuperbowl)

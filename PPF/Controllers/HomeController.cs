@@ -59,6 +59,9 @@ namespace PPF.Controllers
 
         public ActionResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "MyPredict");
+
             var svc = new SeasonService();
             ViewBag.SeasonYear = svc.GetCurrentSeason().SeasonYear.ToString(CultureInfo.InvariantCulture);
             return View();

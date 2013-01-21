@@ -617,9 +617,15 @@
                 buttons: {
                     'OK': function () {
                         $.post('@Url.Action("DeleteGame", "MyPredict")', { gameId: gameId }, function (data) {
+                            if (data == 'success') {
+                                $("#tabs").tabs("load", currentTab);
+                            }
+                            else {
+                                alert(data);
+                            }
 
-                            $("#tabs").tabs("load", currentTab);
                             $("#dlgAsk").dialog("close");
+
 
                         }, "json");
                     },

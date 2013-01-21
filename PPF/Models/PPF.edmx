@@ -354,8 +354,11 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Pick_Game">
-          <End Type="ppfModel.Game" Role="Game" Multiplicity="1" />
-          <End Type="ppfModel.Pick" Role="Pick" Multiplicity="*" />
+          <End Type="ppfModel.Game" Role="Game" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="ppfModel.Pick" Role="Pick" Multiplicity="*" >
+          </End>
           <ReferentialConstraint>
             <Principal Role="Game">
               <PropertyRef Name="Id" />
