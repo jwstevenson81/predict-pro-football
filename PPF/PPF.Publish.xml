@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
-  <publishProfile publishUrl="ftp://184.168.88.78/ppf_publish" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="False" msdeploySite="http://w8v-web:8078/ppf" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="True" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FTP" replaceMatchingFiles="True" userName="predict" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA/9/5ankXx0azUpLe6lzbFAAAAAACAAAAAAADZgAAwAAAABAAAABHVbtHfN6rlCwyJnDXhtPWAAAAAASAAACgAAAAEAAAAHc8Gx+qyuRnmboWtriJVw0YAAAAzEtHvCGuYqQO48KkmGo4cDBcpmhD1jpMFAAAAGFypXLDEK9gpYlD8YKWg8eAitH/" SelectedForPublish="True">
+  <publishProfile publishUrl="C:\Users\jstevenson\Documents\GitHub\predict-pro-football\publish" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="False" msdeploySite="http://w8v-web:8078/ppf" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="True" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FileSystem" replaceMatchingFiles="False" userName="predict" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAATZZLnogBEkuQAaQWfXeeaAAAAAACAAAAAAADZgAAwAAAABAAAACwUZifiJ3KhThrTnOfYXOEAAAAAASAAACgAAAAEAAAALZ29f6kGU6PpPm3idqhoCoYAAAAZOO/OQX9DwxmUJLSdT+aVDSkN92cFF5BFAAAAMCcHzihfyAECWGsknzQGexvzH1f" SelectedForPublish="True">
     <file relUrl="Scripts/jquery.validate.unobtrusive.js" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Content/jquery-ui/black-tie/images/ui-icons_222222_256x240.png" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Content/jquery-ui/black-tie/images/ui-bg_highlight-soft_50_aaaaaa_1x100.png" publishTime="09/10/2012 09:56:42" />
@@ -24,13 +24,13 @@
     <file relUrl="Scripts/jquery.countdown.min.js" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Scripts/jquery.validate.unobtrusive.min.js" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Scripts/MicrosoftMvcAjax.js" publishTime="09/10/2012 09:56:42" />
-    <file relUrl="bin/PPF.dll" publishTime="01/21/2013 12:23:04" />
-    <file relUrl="Content/jquery-ui/smoothness/images/ui-icons_888888_256x240.png" publishTime="09/10/2012 09:56:42" />
+    <file relUrl="bin/PPF.dll" publishTime="02/21/2013 16:43:40" />
+    <file relUrl="Views/Home/Index.cshtml" publishTime="09/10/2012 10:01:44" />
     <file relUrl="Content/jquery-ui/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Content/jquery.qtip.css" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Scripts/jquery-1.4.4.min.js" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Content/jquery-ui/black-tie/images/ui-bg_inset-hard_45_cd0a0a_1x100.png" publishTime="09/10/2012 09:56:42" />
-    <file relUrl="bin/PPF.pdb" publishTime="01/21/2013 12:23:04" />
+    <file relUrl="bin/PPF.pdb" publishTime="02/21/2013 16:43:40" />
     <file relUrl="bin/System.Web.Razor.xml" publishTime="12/20/2010 09:52:36" />
     <file relUrl="bin/System.Web.WebPages.dll" publishTime="01/05/2011 14:45:38" />
     <file relUrl="Scripts/jquery.unobtrusive-ajax.min.js" publishTime="09/10/2012 09:56:43" />
@@ -63,7 +63,7 @@
     <file relUrl="Content/img/ajax-loading.gif" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Content/img/pick_screen.png" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Content/img/my-predict.png" publishTime="09/10/2012 09:56:42" />
-    <file relUrl="Web.config" publishTime="09/10/2012 14:55:48" />
+    <file relUrl="Web.config" publishTime="02/21/2013 16:36:19" />
     <file relUrl="Scripts/jquery.qtip.js" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Content/jquery-ui/black-tie/images/ui-bg_highlight-hard_40_aaaaaa_1x100.png" publishTime="09/10/2012 09:56:42" />
     <file relUrl="bin/System.Web.WebPages.Razor.xml" publishTime="12/20/2010 09:52:36" />
@@ -79,7 +79,6 @@
     <file relUrl="Content/jquery-ui/smoothness/jquery-ui-1.8.8.custom.css" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Views/Shared/SuperbowlPlayoffPicker.cshtml" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Content/jquery-ui/black-tie/images/ui-bg_glass_55_1c1c1c_1x400.png" publishTime="09/10/2012 09:56:42" />
-    <file relUrl="Views/Home/Index.cshtml" publishTime="09/10/2012 10:01:44" />
     <file relUrl="Views/Web.config" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Views/Home/Privacy.cshtml" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Content/jquery-ui/smoothness/images/ui-icons_cd0a0a_256x240.png" publishTime="09/10/2012 09:56:42" />
@@ -92,6 +91,7 @@
     <file relUrl="Content/jquery-ui/smoothness/images/ui-bg_glass_65_ffffff_1x400.png" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Global.asax" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Scripts/jquery.unobtrusive-ajax.js" publishTime="09/10/2012 09:56:43" />
+    <file relUrl="Content/jquery-ui/smoothness/images/ui-icons_888888_256x240.png" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Scripts/MicrosoftAjax.debug.js" publishTime="09/10/2012 09:56:42" />
     <file relUrl="Views/MyPredict/NewInterface.cshtml" publishTime="09/10/2012 09:56:43" />
     <file relUrl="Content/jquery-ui/black-tie/images/ui-icons_4ca300_256x240.png" publishTime="09/10/2012 09:56:42" />

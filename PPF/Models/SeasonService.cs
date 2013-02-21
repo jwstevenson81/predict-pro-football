@@ -214,7 +214,7 @@ namespace PPF.Models
             };
             // set the superbowl possible points
             if (maxRWeek > 0 && !vm.ShouldHaveSuperbowlPicksOnly)
-                vm.PlayoffSuperbowlPointTotal = ((maxRWeek - week) + 1) * 2;
+                vm.PossibleSuperbowlPointTotal = ((maxRWeek - week) + 1) * 2;
             else if (vm.ShouldHaveSuperbowlPicksOnly && week == maxRWeek + 1)
                 vm.PossibleSuperbowlPointTotal = 30;
             else if (vm.ShouldHavePlayoffSuperbowlPicks && week == maxRWeek + 2)
@@ -223,6 +223,22 @@ namespace PPF.Models
                 vm.PossibleSuperbowlPointTotal = 10;
             else
                 vm.PossibleSuperbowlPointTotal = 0;
+
+            if (maxRWeek < week)
+            {
+                switch (week - maxRWeek)
+                {
+                    case 1:
+                        vm.PossibleSuperbowlPointTotal = 30;
+                        break;
+                    case 2:
+                        vm.PossibleSuperbowlPointTotal = 20;
+                        break;
+                    case 3:
+                        vm.PossibleSuperbowlPointTotal = 10;
+                        break;
+                }
+            }
 
             // return the newely created view model
             return vm;
@@ -619,7 +635,21 @@ namespace PPF.Models
                     }
                     else if (playoffSuperbowlPick.IsSuperbowl && !playoffSuperbowlPick.IsPlayoff)
                     {
-                        playoffSuperbowlPick.PointTotal = ((finalRegularSeasonGameWeek - playoffSuperbowlPick.Week) + 1)*2;                        
+                        if (playoffSuperbowlPick.Week > finalRegularSeasonGameWeek)
+                            switch (playoffSuperbowlPick.Week - finalRegularSeasonGameWeek)
+                            {
+                                case 1:
+                                    playoffSuperbowlPick.PointTotal = 30;
+                                    break;
+                                case 2:
+                                    playoffSuperbowlPick.PointTotal = 20;
+                                    break;
+                                case 3:
+                                    playoffSuperbowlPick.PointTotal = 10;
+                                    break;
+                            }
+                        else
+                            playoffSuperbowlPick.PointTotal = ((finalRegularSeasonGameWeek - playoffSuperbowlPick.Week) + 1)*2;                        
                     }
                 }
             }
